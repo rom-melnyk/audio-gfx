@@ -4,7 +4,7 @@
   "description": "Audio API demo",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rom-melnyk/audio-gfx",
+    "url": "https://github.com/rom-melnyk/audio-gfx"
   },
   "bugs": {
     "url": "https://github.com/rom-melnyk/audio-gfx/issues",
@@ -21,11 +21,11 @@
   },
   "license": "ISC",
 
-  "main": "app/index.es",
+  "main": "app/app.es",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack ",
-    "dev": "webpack-dev-server "
+    "prod": "webpack --progress --colors",
+    "dev": "webpack-dev-server --progress --colors"
   },
 
   "devDependencies": {

@@ -1,5 +1,6 @@
 audio/*
 .idea/
 node_modules/
+prod/
 
 
