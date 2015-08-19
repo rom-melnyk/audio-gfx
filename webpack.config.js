@@ -1,11 +1,12 @@
 module.exports = {
     entry: [
-        'webpack/hot/dev-server',
+        'webpack/hot/only-dev-server',
         'webpack-dev-server/client?http://localhost:8080',
         './app/app.es'
     ],
     output: {
-        path: __dirname + '/prod',
+        path: __dirname + '/bundle',
+        publicPath: '/bundle/',
         filename: 'bundle.js'
     },
     module: {
@@ -14,5 +15,8 @@ module.exports = {
             { test: /\.es6?$/, exclude: /node_modules/, loader: 'babel-loader'}
         ]
     },
-    devtool: 'source-map'
+    devtool: 'source-map',
+    devServer: {
+        inline: true
+    }
 };

@@ -1,6 +1,5 @@
 audio/*
 .idea/
 node_modules/
-prod/
-
+bundle/bundle*
 
