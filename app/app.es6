@@ -1,5 +1,5 @@
-import initAudioContext from './init.es6';
-import loadSound from './load.es6';
+import initAudioContext from './init-audio-context.es6';
+import loadSound from './load-sound.es6';
 import KeyHandler from './key-handler.es6';
 
 let url = './audio/nagano_-_zastrahuy_bratuhu.mp3';
