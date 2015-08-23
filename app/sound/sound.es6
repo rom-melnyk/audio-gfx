@@ -1,4 +1,16 @@
 /**
+ * @param {AudioContext} context
+ * @param {AudioBuffer} buffer
+ * @return {AudioBufferSourceNode}
+ */
+function createSource (context, buffer) {
+    let source = context.createBufferSource();
+    source.buffer = buffer;
+    source.connect(context.destination);
+    return source;
+}
+
+/**
  * Stop and disconnect old source
  * @param {AudioBufferSourceNode} [source]
  */
@@ -6,17 +18,8 @@ function invalidateSource (source) {
     if (source) {
         source.stop();
         source.disconnect();
+        source = null;
     }
-}
-
-/**
- * @return {AudioBufferSourceNode}
- */
-function createSource (context, buffer) {
-    let source = context.createBufferSource();
-    source.buffer = buffer;
-    source.connect(context.destination);
-    return source
 }
 
 /**
@@ -30,7 +33,6 @@ function Sound (context, buffer) {
         _pausedAt = null,
         _offset = 0;
 
-    this.duration = buffer.duration;
     this.isPaused = true;
     this.source = createSource(context, buffer);
 
@@ -39,7 +41,7 @@ function Sound (context, buffer) {
      * @return {Sound}
      */
     this.play = (offset = _offset) => {
-        if (_offset >= duration) {
+        if (_offset >= buffer.duration) {
             this.stop();
             this.play();
             return this;
@@ -68,7 +70,9 @@ function Sound (context, buffer) {
     };
 
     this.stop = () => {
-        invalidateSource(source);
+        invalidateSource(this.source);
+        _startedAt = null;
+        _pausedAt = null;
         _offset = 0;
         this.isPaused = true;
     };

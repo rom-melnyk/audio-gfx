@@ -3,7 +3,8 @@ let listeners = {};
 function handle (e) {
     //console.log('\t// keyCode = ', e.keyCode);
     for (let key in listeners) {
-        if (e.keyCode + '' === key && listeners[key] instanceof Array) {
+        // must be == not === because `key` is String and `e.keyCode` is Number
+        if (e.keyCode == key && listeners[key] instanceof Array) {
             listeners[key].forEach((handler) => {
                 if (typeof handler === 'function') {
                     handler(e);
