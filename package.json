@@ -21,7 +21,7 @@
   },
   "license": "ISC",
 
-  "main": "app/app.es",
+  "main": "app/app.es6",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prod": "webpack --progress --colors",
