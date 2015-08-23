@@ -1,13 +1,12 @@
 /**
- * @return {Object|null}
+ * @return {AudioContext|null}
  */
 function initAudioContext () {
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     try {
-        let context = new AudioContext();
-        return context;
+        return new AudioContext();
     } catch (e) {
-        console.log('Your browser does not support WebAudio API.');
+        console.error('Your browser does not support WebAudio API.');
         return null;
     }
 }
