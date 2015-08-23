@@ -7,7 +7,7 @@ let context, buffer, source;
 let isPaused = true,
     startedAt = null,
     pausedAt = null,
-    offset = 350;
+    offset = 0;
 
 let soundStat = {
     duration: null,
@@ -28,7 +28,6 @@ function onLoad () {
         ['duration', 'length', 'numberOfChannels', 'sampleRate'].forEach((key) => {
             soundStat[key] = arrayBuffer[key];
         });
-        console.log(soundStat.duration);
         KeyHandler.handle(KeyHandler.KEY_SPACE, playPause);
     });
 
@@ -59,7 +58,6 @@ function playSound () {
     source = context.createBufferSource();
     source.buffer = buffer;
     source.connect(context.destination);
-    source.onended = stopSound;
 
     startedAt = Date.now();
     source.start(0, offset);
