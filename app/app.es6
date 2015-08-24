@@ -8,9 +8,9 @@ import Stat from './sound/stat.es6';
 import Analyser from './analyser/analyzer.es6';
 import Levels from './analyser/levels.es6';
 
-let url = './audio/nagano_-_zastrahuy_bratuhu.mp3';
 let context, sound, stat, analyser;
 
+const URL = './audio/nagano_-_zastrahuy_bratuhu.mp3';
 const ANALYSER_BARS_COUNT = 32;
 const ANALYSER_TICKS_PER_SECOND = 16;
 
@@ -20,7 +20,7 @@ function onLoad () {
 
     KeyHandler.init();
 
-    loadSound(context, url, (audioBuffer) => {
+    loadSound(context, URL, (audioBuffer) => {
         console.log('Ready to go!\nPress [SPACE] to start playing.');
         stat = new Stat(audioBuffer);
         analyser = new Analyser(context, ANALYSER_BARS_COUNT * 2);
