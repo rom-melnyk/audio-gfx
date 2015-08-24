@@ -1,12 +1,20 @@
 /**
  * @param {AudioContext} context
  * @param {AudioBuffer} buffer
+ * @param {Object[]} [nodes=[]]
  * @return {AudioBufferSourceNode}
  */
-function createSource (context, buffer) {
+function createSource (context, buffer, nodes = []) {
     let source = context.createBufferSource();
     source.buffer = buffer;
-    source.connect(context.destination);
+    for (let i = 0; i < nodes.length; i++) {
+        if (i === 0) {
+            source.connect(nodes[i]);
+        } else {
+            nodes[i - 1].connect(nodes[i]);
+        }
+    }
+    (nodes[nodes.length - 1] || source).connect(context.destination);
     return source;
 }
 
@@ -25,16 +33,18 @@ function invalidateSource (source) {
 /**
  * @param {AudioContext} context
  * @param {AudioBuffer} buffer
+ * @param {Object[]} [nodes=[]]
  * @returns {*}
  * @constructor
  */
-function Sound (context, buffer) {
+function Sound (context, buffer, nodes = []) {
     let _startedAt = null,
         _pausedAt = null,
         _offset = 0;
 
     this.isPaused = true;
-    this.source = createSource(context, buffer);
+    this.nodes = nodes;
+    this.source = createSource(context, buffer, this.nodes);
 
     /**
      * @param {Number} [offset]
@@ -50,7 +60,7 @@ function Sound (context, buffer) {
         if (_startedAt) {
             invalidateSource(this.source);
         }
-        this.source = createSource(context, buffer);
+        this.source = createSource(context, buffer, this.nodes);
 
         _offset = offset;
         _startedAt = Date.now();
