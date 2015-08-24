@@ -1,7 +1,7 @@
 module.exports = {
     entry: [
-        'webpack/hot/only-dev-server',
-        'webpack-dev-server/client?http://localhost:8080',
+        //'webpack/hot/only-dev-server',
+        //'webpack-dev-server/client?http://localhost:8080',
         './app/app.es6'
     ],
     output: {
@@ -18,6 +18,7 @@ module.exports = {
     debug: true,
     devtool: 'source-map',
     devServer: {
+        hot: true,
         inline: true
     }
 };
