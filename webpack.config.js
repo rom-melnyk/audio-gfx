@@ -15,6 +15,7 @@ module.exports = {
             { test: /\.es6?$/, exclude: /node_modules/, loader: 'babel-loader'}
         ]
     },
+    debug: true,
     devtool: 'source-map',
     devServer: {
         inline: true
