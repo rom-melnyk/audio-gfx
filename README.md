@@ -1,6 +1,8 @@
 # Web Audio API demo
 
 ## How to run the application:
+Before you start, create the folder `audio` and place an audio file there.
+
 - **Developement mode:**  
    `npm run dev`
 - **Production mode:**
