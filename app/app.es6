@@ -5,11 +5,14 @@ import loadSound from './load-sound.es6';
 import KeyHandler from './key-handler.es6';
 import Sound from './sound/sound.es6';
 import Stat from './sound/stat.es6';
+import Analyser from './analyser/analyzer.es6';
+import Levels from './analyser/levels.es6';
 
 let url = './audio/nagano_-_zastrahuy_bratuhu.mp3';
-let context, sound, stat;
+let context, sound, stat, analyser;
 
-let analyser, levels = [];
+const ANALYSER_BARS_COUNT = 32;
+const ANALYSER_TICKS_PER_SECOND = 16;
 
 function onLoad () {
     context = initAudioContext();
@@ -20,10 +23,9 @@ function onLoad () {
     loadSound(context, url, (audioBuffer) => {
         console.log('Ready to go!\nPress [SPACE] to start playing.');
         stat = new Stat(audioBuffer);
-        analyser = context.createAnalyser();
-        analyser.fftSize = 64;
-        createHtml();
-        sound = new Sound(context, audioBuffer, [analyser]);
+        analyser = new Analyser(context, ANALYSER_BARS_COUNT * 2);
+        sound = new Sound(context, audioBuffer, [analyser.node]);
+        Levels.init(analyser.getFft() / 2);
         KeyHandler.handle(KeyHandler.KEY_SPACE, playPause);
     });
 
@@ -32,30 +34,13 @@ function onLoad () {
 function playPause () {
     if (sound.isPaused) {
         sound.play();
-        setTimeout(() => {
-            let arr = new Uint8Array(analyser.fftSize);
-            analyser.getByteFrequencyData(arr);
-            //console.log(' non-zeroes: ', Array.prototype.filter.call(arr, (el) => { return el > 0; }).length);
-        }, 10);
+        analyser.startCapturing((levels) => { Levels.update(levels); }, ANALYSER_TICKS_PER_SECOND);
     } else {
         sound.pause();
+        analyser.stopCapturing(() => {
+            Levels.forEach((div) => { div.style.height = 0; });
+        });
     }
-}
-
-function createHtml () {
-    for (let i = 0; i < analyser.fftSize; i++) {
-        let div = document.createElement('div');
-        div.style.width = 100 / analyser.fftSize + '%';
-        //div.style.height = Math.floor(Math.random() * 100) + 'px';
-        div.style.left = i * 100 / analyser.fftSize + '%';
-        div.className = 'analyser';
-        document.body.appendChild(div);
-        levels.push(div);
-    }
-}
-
-function tick () {
-
 }
 
 window.addEventListener('load', onLoad, true);
