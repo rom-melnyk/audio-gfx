@@ -23,6 +23,11 @@ function invalidateSource (source) {
     }
 }
 
+// ------------------------------------------
+// context.createMediaElementSource(audioTag);
+//
+// ------------------------------------------
+
 /**
  * @param {AudioContext} context
  * @param {AudioBuffer} buffer
