@@ -14,6 +14,9 @@ function Analyser (context, fft = 64) {
      * @alias node
      */
     this.analyser = this.node = context.createAnalyser();
+    this.analyser.minDecibels = -100;
+    this.analyser.maxDecibels = -30;
+    this.analyser.smoothingTimeConstant = .8;
 
     /**
      * @param {Number} fft                  Fourier row size. MUST be power of 2 in the range [32..2048]
