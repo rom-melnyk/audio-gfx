@@ -9,17 +9,28 @@ function Analyser (context, fft = 64) {
         _interval,
         _tickFn;
 
+    /**
+     * @property {AnalyzerNode} analyzer
+     * @alias node
+     */
     this.analyser = this.node = context.createAnalyser();
 
+    /**
+     * @param {Number} fft                  Fourier row size. MUST be power of 2 in the range [32..2048]
+     */
     this.setFft = (fft) => {
         _fft = fft;
         this.analyser.fftSize = _fft;
+        return this;
     };
 
+    /**
+     * @returns {Number}
+     */
     this.getFft = () => { return _fft; };
 
     /**
-     * @param {Function} callback
+     * @param {Function} callback           Receives the spectrogram array as the parameter
      * @param {Number} [ticksPerSecond=4]
      */
     this.startCapturing = (callback, ticksPerSecond = 4) => {
@@ -37,6 +48,7 @@ function Analyser (context, fft = 64) {
         };
 
         _tickFn();
+        return this;
     };
 
     /**
@@ -46,6 +58,7 @@ function Analyser (context, fft = 64) {
         clearTimeout(_timeoutId);
         _timeoutId = null;
         callback();
+        return this;
     };
 
     this.setFft(fft);
