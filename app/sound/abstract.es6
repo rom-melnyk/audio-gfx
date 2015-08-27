@@ -2,12 +2,11 @@ let errorLog = (method) => {
     console.error(`".${method}()" method must be implemented!`);
 };
 
-let $_context = Symbol();
-
 class SoundAbstract {
     constructor (context) {
+        this.context = context;
         this.nodes = [];
-        this[$_context] = context;
+        this.source = null;
     };
 
     play (offset) { errorLog('play'); };
@@ -16,20 +15,27 @@ class SoundAbstract {
 
     stop () { errorLog('stop'); };
 
-    attachNodes (nodes = []) {
-        for (let i = nodes.length - 1; i >= 0; i--) {
-            if (i === nodes.length - 1) {
-                nodes[i].connect(this[$_context].destination);
+    attachNodes (nodes = this.nodes) {
+        this.nodes = nodes;
+        for (let i = this.nodes.length - 1; i >= 0; i--) {
+            if (i === this.nodes.length - 1) {
+                this.nodes[i].connect(this.context.destination);
             } else {
-                nodes[i].connect(nodes[i + 1]);
+                this.nodes[i].connect(this.nodes[i + 1]);
             }
         }
-    }
+        if (this.source) {
+            this.source.connect(this.nodes[0] || this.context.destination);
+        }
+        return this;
+    };
 
     destroy () {
+        this.context = null;
         this.nodes = [];
-        this[$_context] = null;
-    }
+        this.source = null;
+
+    };
 }
 
 export default SoundAbstract;
