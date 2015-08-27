@@ -8,7 +8,6 @@ function createSource () {
     let source = this.context.createBufferSource();
     source.buffer = this.buffer;
     source.connect(this.nodes[0] || this.context.destination);
-    //this.attachNodes();
     return source;
 }
 
@@ -38,7 +37,7 @@ class SoundFromBuffer extends SoundAbstract {
 
     /**
      * @param {Number} [offset]
-     * @return {SoundFromBuffer}
+     * @return {SoundFromElement}
      */
     play (offset = this[$_offset]) {
         if (offset >= this.buffer.duration) {
