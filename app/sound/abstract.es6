@@ -28,6 +28,7 @@ class SoundAbstract {
 
     destroy () {
         this.nodes = [];
+        this[$_context] = null;
     }
 }
 
