@@ -1,3 +1,5 @@
+var Color = require('color-js');
+
 /**
  * @param {Number} size                         Number of bars to show
  * @param {String} [className="analyser"]       Class attribute value for each bar
@@ -8,10 +10,17 @@ function Spectrogram (size, className = 'analyser') {
 
     function _init () {
         for (let i = 0; i < size; i++) {
-            let bar = document.createElement('div');
+            let bar = document.createElement('div'),
+                c1 = new Color.hsl(Math.floor(i * 360 / size), 50, 50),
+                c2 = c1.clone().tune.l(30);
+
+            c1 = c1.toString();
+            c2 = c2.toString();
+
             bar.style.width = 100 / size + '%';
             bar.style.left = i * 100 / size + '%';
             bar.className = className;
+            bar.style.backgroundImage = `-webkit-linear-gradient(top, ${c1}, ${c2})`;
             _bars.push(bar);
         }
     }

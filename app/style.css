@@ -13,5 +13,4 @@ html, body {
 .analyser {
     position: absolute;
     bottom: 0;
-    background: -webkit-linear-gradient(top, #dea, #a64);
 }
