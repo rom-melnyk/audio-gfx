@@ -1,25 +1,28 @@
 /**
- * @callback onLoadCallback
- * @param {ArrayBuffer} buffer
- */
-
-/**
  * @param {AudioContext} context
  * @param {String} url
- * @param {onLoadCallback} onLoad             gets buffer
+ * @return {Promise}                `.resolve` receives AudioBuffer as parameter
  */
-function loadSound (context, url, onLoad) {
-    var request = new XMLHttpRequest();
-    request.open('GET', url, true);
-    request.responseType = 'arraybuffer';
+function loadSound (context, url) {
+    return new Promise((resolve, reject) => {
+        let request = new XMLHttpRequest();
 
-    // Decode asynchronously
-    request.onload = function () {
-        context.decodeAudioData(request.response, onLoad, function (error) {
-            console.error('WebAudio decoding error', error);
-        });
-    };
-    request.send();
+        request.open('GET', url, true);
+        request.responseType = 'arraybuffer';
+
+        // Decode asynchronously
+        request.onload = () => {
+            context.decodeAudioData(
+                request.response,
+                resolve,
+                (error) => {
+                    console.error('WebAudio decoding error', error);
+                    reject(error);
+                }
+            );
+        };
+        request.send();
+    });
 }
 
 export default loadSound;

@@ -23,7 +23,7 @@ function onLoad () {
 
     KeyHandler.init();
 
-    loadSound(context, URL[1], (audioBuffer) => {
+    loadSound(context, URL[1]).then((audioBuffer) => {
         console.log('Ready to go! Press [SPACE] to start playing.');
         stat = new Stat(audioBuffer);
         analyser = new Analyser(context, ANALYSER_BARS_COUNT * 2);
@@ -38,13 +38,12 @@ function onLoad () {
 
 function playPause () {
     if (sound.isPaused) {
+        spectrogram.cancelFadeOut();
         sound.play();
         analyser.startCapturing((levels) => { spectrogram.update(levels); }, ANALYSER_TICKS_PER_SECOND);
     } else {
         sound.pause();
-        analyser.stopCapturing(() => {
-            spectrogram.forEach((div) => { div.style.height = 0; });
-        });
+        analyser.stopCapturing(() => { spectrogram.fadeOut(ANALYSER_TICKS_PER_SECOND); });
     }
 }
 
