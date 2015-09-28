@@ -26,7 +26,8 @@ function onLoad () {
     loadSound(context, URL[1]).then((audioBuffer) => {
         console.log('Ready to go! Press [SPACE] to start playing.');
         stat = new Stat(audioBuffer);
-        analyser = new Analyser(context, ANALYSER_BARS_COUNT * 2);
+        analyser = new Analyser(context, ANALYSER_BARS_COUNT * 2)
+            .update({smoothingTimeConstant: .6});
         sound = new SoundFromBuffer(context, audioBuffer)
             .attachNodes([analyser.node]);
         spectrogram = new Spectrogram(ANALYSER_BARS_COUNT);

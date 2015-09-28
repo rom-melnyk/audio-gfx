@@ -19,11 +19,20 @@ function Analyser (context, fft = 64) {
     this.analyser.smoothingTimeConstant = .8;
 
     /**
-     * @param {Number} fft                  Fourier row size. MUST be power of 2 in the range [32..2048]
+     * @param {Object} [props]
+     * @param {Number} [props.fftSize]
+     * @param {Number} [props.minDecibels]
+     * @param {Number} [props.maxDecibels]
+     * @param {Number} [props.smoothingTimeConstant]
      */
-    this.setFft = (fft) => {
-        _fft = fft;
-        this.analyser.fftSize = _fft;
+    this.update = (props) => {
+        let analyser = this.analyser;
+        ['fftSize', 'minDecibels', 'maxDecibels', 'smoothingTimeConstant'].forEach((name) => {
+            if (typeof props[name] === 'number') {
+                analyser[name] = props[name];
+                if (name === 'fftSize') { _fft = props[name]; }
+            }
+        });
         return this;
     };
 
@@ -64,7 +73,7 @@ function Analyser (context, fft = 64) {
         return this;
     };
 
-    this.setFft(fft);
+    this.update({fftSize: fft});
 }
 
 export default Analyser;

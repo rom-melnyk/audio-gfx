@@ -11,19 +11,30 @@ function Spectrogram (size, className = 'analyser') {
         _containerHeight = null,
         fadeoutTimerId = null;
 
+    function getStartColor (barNo) {
+        return new Color.hsl(Math.floor(barNo * 360 / size), 30, 60);
+    }
+
+    function getEndColor (barNo) {
+        return getStartColor(barNo).set({s: 0, l: 100});
+    }
+
+    function getBackgroundImage (c1, c2) {
+        const s1 = c1.toString(),
+            s2 = c2.toString();
+        return `-webkit-linear-gradient(top, ${s1} 0%, ${s2} 40%, ${s2} 60%, ${s1} 100%)`;
+    }
+
     function _init () {
         for (let i = 0; i < size; i++) {
             let bar = document.createElement('div'),
-                c1 = new Color.hsl(Math.floor(i * 360 / size), 50, 50),
-                c2 = c1.clone().tune.l(10);
-
-            c1 = c1.toString();
-            c2 = c2.toString();
+                c1 = getStartColor(i).toString(),
+                c2 = getEndColor(i).toString();
 
             bar.style.width = 100 / size + '%';
             bar.style.left = i * 100 / size + '%';
             bar.className = className;
-            bar.style.backgroundImage = `-webkit-linear-gradient(top, ${c1} 0%, ${c2} 40%, ${c2} 60%, ${c1} 100%)`;
+            bar.style.backgroundImage = getBackgroundImage(c1, c2);
             _bars.push(bar);
         }
     }
@@ -34,9 +45,13 @@ function Spectrogram (size, className = 'analyser') {
      */
     this.update = (levels = []) => {
         _bars.forEach((div, index) => {
-            var level = Math.floor(levels[index] || 0);
+            const level = Math.floor(levels[index] || 0),
+                c1 = getStartColor(index).tune.s(level / 255 * 100),
+                c2 = getEndColor(index);
+
             div.style.height = level + 'px';
             div.style.top = (_containerHeight - level) / 2 + 'px';
+            div.style.backgroundImage = getBackgroundImage(c1, c2);
             div._level = level;
         });
     };
