@@ -1,7 +1,7 @@
 import './style.css';
 
 import initAudioContext from './init-audio-context.es6';
-import loadSound from './load-sound.es6';
+import loadSound from './loaders/load-sound-from-buffer.es6';
 import KeyHandler from './key-handler.es6';
 import SoundFromBuffer from './sound/sound-from-buffer.es6';
 import Stat from './sound/stat.es6';
@@ -43,7 +43,7 @@ function playPause () {
         analyser.startCapturing((levels) => { spectrogram.update(levels); }, ANALYSER_TICKS_PER_SECOND);
     } else {
         sound.pause();
-        analyser.stopCapturing(() => { spectrogram.fadeOut(ANALYSER_TICKS_PER_SECOND); });
+        analyser.stopCapturing(() => { spectrogram.fadeOut(ANALYSER_TICKS_PER_SECOND, .5); });
     }
 }
 

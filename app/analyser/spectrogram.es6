@@ -15,7 +15,7 @@ function Spectrogram (size, className = 'analyser') {
         for (let i = 0; i < size; i++) {
             let bar = document.createElement('div'),
                 c1 = new Color.hsl(Math.floor(i * 360 / size), 50, 50),
-                c2 = c1.clone().tune.l(30);
+                c2 = c1.clone().tune.l(10);
 
             c1 = c1.toString();
             c2 = c2.toString();
@@ -57,7 +57,7 @@ function Spectrogram (size, className = 'analyser') {
         return this;
     };
 
-    this.fadeOut = (ticksPerSecond = 16) => {
+    this.fadeOut = (ticksPerSecond = 16, factor = .8) => {
         let levels = [],
             self = this,
             _interval = 1000 / ticksPerSecond;
@@ -70,7 +70,7 @@ function Spectrogram (size, className = 'analyser') {
             let needUpdates = false;
             levels = levels.map((l) => {
                 if (l > 0) {
-                    l = Math.floor(l * 0.8);
+                    l = Math.floor(l * factor);
                     needUpdates = true;
                 }
                 return l;
