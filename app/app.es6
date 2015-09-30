@@ -1,21 +1,23 @@
 import './style.css';
 
 import initAudioContext from './init-audio-context.es6';
-import loadSound from './loaders/load-sound-from-buffer.es6';
+import loadSoundFromBuffer from './loaders/load-sound-from-buffer.es6';
+import loadSoundFromElement from './loaders/load-sound-from-element.es6';
+
+import Config from './config.es6';
+
 import KeyHandler from './key-handler.es6';
 import SoundFromBuffer from './sound/sound-from-buffer.es6';
+import SoundFromElement from './sound/sound-from-element.es6';
 import Stat from './sound/stat.es6';
 import Analyser from './analyser/analyzer.es6';
 import Spectrogram from './analyser/spectrogram.es6';
 
 let context, sound, stat, analyser, spectrogram;
 
-const URL = [
-        './audio/nagano_-_zastrahuy_bratuhu.mp3',
-        './audio/immunize ft. liam howlett .mp3'
-    ];
-const ANALYSER_BARS_COUNT = 32;
-const ANALYSER_TICKS_PER_SECOND = 16;
+const URL = Config.urls[1];
+const ANALYSER_BARS_COUNT = Config.analyser.barCount;
+const ANALYSER_TICKS_PER_SECOND = Config.analyser.ticksPerSecond;
 
 function onLoad () {
     context = initAudioContext();
@@ -23,18 +25,27 @@ function onLoad () {
 
     KeyHandler.init();
 
-    loadSound(context, URL[1]).then((audioBuffer) => {
-        console.log('Ready to go! Press [SPACE] to start playing.');
-        stat = new Stat(audioBuffer);
-        analyser = new Analyser(context, ANALYSER_BARS_COUNT * 2)
-            .update({smoothingTimeConstant: .6});
-        sound = new SoundFromBuffer(context, audioBuffer)
-            .attachNodes([analyser.node]);
-        spectrogram = new Spectrogram(ANALYSER_BARS_COUNT);
-        spectrogram.renderTo(document.body);
-        KeyHandler.handle(KeyHandler.KEY_SPACE, playPause);
-    });
+    if (Config.source === 'buffer') {
+        loadSoundFromBuffer(context, URL).then(onBufferLoaded);
+    } else {
+        loadSoundFromElement(URL).then(onBufferLoaded);
+    }
+}
 
+function onBufferLoaded (source) {
+    console.log('Ready to go! Press [SPACE] to start playing.');
+    //stat = new Stat(audioBuffer);
+    analyser = new Analyser(context, ANALYSER_BARS_COUNT * 2)
+        .update({smoothingTimeConstant: .6});
+
+    sound = Config.source === 'buffer'
+        ? new SoundFromBuffer(context, source)
+        : new SoundFromElement(context, source);
+    sound.attachNodes([analyser.node]);
+
+    spectrogram = new Spectrogram(ANALYSER_BARS_COUNT);
+    spectrogram.renderTo(document.body);
+    KeyHandler.handle(KeyHandler.KEY_SPACE, playPause);
 }
 
 function playPause () {
