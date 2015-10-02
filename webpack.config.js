@@ -7,7 +7,8 @@ module.exports = {
     },
     module: {
         loaders: [
-            { test: /\.css$/, loader: 'style!css' },
+            { test: /\.css$/, loaders: ['style', 'css'] },
+            { test: /\.scss$/, loaders: ['style', 'css', 'sass'] },
             { test: /\.es6?$/, exclude: /node_modules/, loader: 'babel-loader'}
         ]
     },
