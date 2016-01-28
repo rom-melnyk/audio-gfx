@@ -1,6 +1,7 @@
 # Web Audio API demo
 
 ## How to run the application:
+1. Run `npm install`.
 1. Before you start, create the folder `audio` and place an audio file there.
 1. Update `app/config.json` in proper way (especially the `urls` array).
 
