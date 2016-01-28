@@ -1,6 +1,5 @@
 {
-  "//// source meaning": "'buffer' or 'html-element'",
-  "source": "html-element",
+  "source": "html-element", // "buffer" or "html-element"
 
   "urls": [
     "./audio/nagano_-_zastrahuy_bratuhu.mp3",

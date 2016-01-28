@@ -4,7 +4,7 @@ import initAudioContext from './init-audio-context.es6';
 import loadSoundFromBuffer from './loaders/load-sound-from-buffer.es6';
 import loadSoundFromElement from './loaders/load-sound-from-element.es6';
 
-import Config from './config.json';
+import Config from './config.hson';
 
 import KeyHandler from './key-handler.es6';
 import SoundFromBuffer from './sound/sound-from-buffer.es6';
