@@ -4,7 +4,7 @@ import initAudioContext from './init-audio-context.es6';
 import loadSoundFromBuffer from './loaders/load-sound-from-buffer.es6';
 import loadSoundFromElement from './loaders/load-sound-from-element.es6';
 
-import Config from './config.es6';
+import Config from './config.json';
 
 import KeyHandler from './key-handler.es6';
 import SoundFromBuffer from './sound/sound-from-buffer.es6';
@@ -15,7 +15,7 @@ import Spectrogram from './analyser/spectrogram.es6';
 
 let context, sound, stat, analyser, spectrogram;
 
-const URL = Config.urls[1];
+const URL = Config.urls[0];
 const ANALYSER_BARS_COUNT = Config.analyser.barCount;
 const ANALYSER_TICKS_PER_SECOND = Config.analyser.ticksPerSecond;
 

@@ -8,6 +8,7 @@ module.exports = {
     module: {
         loaders: [
             { test: /\.css$/, loader: 'style!css' },
+            { test: /\.json$/, loader: 'json-loader' },
             { test: /\.es6?$/, exclude: /node_modules/, loader: 'babel-loader'}
         ]
     },

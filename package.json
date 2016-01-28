@@ -31,6 +31,7 @@
     "babel-loader": "^5.3.2",
     "color-js": "git://github.com/rom-melnyk/color.js",
     "css-loader": "^0.16.0",
+    "json-loader": "^0.5.4",
     "style-loader": "^0.12.3",
     "webpack": "^1.11.0",
     "webpack-dev-server": "^1.10.1"
