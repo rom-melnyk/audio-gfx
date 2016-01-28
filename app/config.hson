@@ -2,8 +2,8 @@
   "source": "html-element", // "buffer" or "html-element"
 
   "urls": [
-    "./audio/nagano_-_zastrahuy_bratuhu.mp3",
-    "./audio/immunize ft. liam howlett .mp3"
+    "./audio/pendulum-immunize-feat-liam-howlett.mp3",
+    "./audio/noggano-zastrahui.mp3"
   ],
 
   "analyser": {
