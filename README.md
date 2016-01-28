@@ -2,7 +2,7 @@
 
 ## How to run the application:
 1. Run `npm install`.
-1. Before you start, create the folder `audio` and place an audio file there.
+1. Create the folder `audio` and place one or more audio files there.
 1. Update `app/config.json` in proper way (especially the `urls` array).
 
 ---
