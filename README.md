@@ -1,13 +1,16 @@
 # Web Audio API demo
 
-## How to run the application:
+## Before you begin
 1. Run `npm install`.
 1. Create the folder `audio` and place one or more audio files there.
-1. Update `app/config.json` in proper way (especially the `urls` array).
+1. Update `app/config.hson` in proper way (especially the `urls` array).
+  - Don't be afraid of `HSON`, it's [Human-friendly](https://github.com/timjansen/hanson) JSON _(for instance, it supports JS-like comments)._
+
 
 ---
 
-- **Developement mode:**  
+## Run and develop
+- **Development mode:**  
    `npm run dev`
 - **Production mode:**
   1. `npm run prod`
