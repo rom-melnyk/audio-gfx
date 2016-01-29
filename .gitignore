@@ -1,5 +1,2 @@
-audio/*
 .idea/
 node_modules/
-bundle/bundle*
-

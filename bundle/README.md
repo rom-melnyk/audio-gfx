@@ -1,1 +1,0 @@
-### Webpack compilation results appear in this folder
