@@ -5,37 +5,48 @@ var Color = require('color-js');
  * @param {String} [className="analyser"]       Class attribute value for each bar
  * @constructor
  */
-function Spectrogram (size, className = 'analyser') {
-    let _bars = [],
+function Spectrogram (size, className = 'spectrogram-bar') {
+    let _barPairs = [],
         _container = null,
-        _containerHeight = null,
+        //_containerHeight = null,
         fadeoutTimerId = null;
 
     function getStartColor (barNo) {
-        return new Color.hsl(Math.floor(barNo * 360 / size), 30, 60);
+        return new Color.hsla(Math.floor(barNo * 360 / size), 30, 30, 1);
     }
 
-    function getEndColor (barNo) {
-        return getStartColor(barNo).set({s: 0, l: 100});
+    function getEndColor (color) {
+        return color.clone().tune({l: -5});
     }
 
-    function getBackgroundImage (c1, c2) {
-        const s1 = c1.toString(),
-            s2 = c2.toString();
-        return `-webkit-linear-gradient(top, ${s1} 0%, ${s2} 40%, ${s2} 60%, ${s1} 100%)`;
+    function getBackgroundImageString (barElement) {
+        const s1 = barElement._color.toString();
+        const s2 = getEndColor(barElement._color).toString();
+
+        return `-webkit-linear-gradient(top, ${s1} 0%, ${s2} 35%, ${s2} 65%, ${s1} 100%)`;
     }
 
     function _init () {
+        const gapFactor = .4;
         for (let i = 0; i < size; i++) {
-            let bar = document.createElement('div'),
-                c1 = getStartColor(i).toString(),
-                c2 = getEndColor(i).toString();
+            let bar = document.createElement('div');
+            let color = getStartColor(i);
 
-            bar.style.width = 100 / size + '%';
-            bar.style.left = i * 100 / size + '%';
+            const width = 100 / size / 2;
+            bar.style.width = width * (1 - gapFactor) + '%';
+            bar.style.left = (50 + i * width) + '%';
             bar.className = className;
-            bar.style.backgroundImage = getBackgroundImage(c1, c2);
-            _bars.push(bar);
+            bar._color = color;
+            bar.style.backgroundImage = getBackgroundImageString(bar);
+
+            _barPairs.push(bar);
+
+            bar = bar.cloneNode(false);
+            bar.style.right = (50 + i * width + gapFactor * width) + '%';
+            bar.style.left = 'auto';
+            bar._color = color.clone();
+
+            _barPairs.push(bar);
         }
     }
 
@@ -44,20 +55,31 @@ function Spectrogram (size, className = 'analyser') {
      * @param {Number[]} levels
      */
     this.update = (levels = []) => {
-        _bars.forEach((div, index) => {
-            const level = Math.floor(levels[index] || 0),
-                c1 = getStartColor(index).tune.s(level / 255 * 100),
-                c2 = getEndColor(index);
+        _barPairs.forEach((bar, index) => {
+            // adapting index: pairs of bars are mapped to single levels[index] value
+            if (index % 2 === 1) {
+                index = index - 1;
+            }
+            index = index / 2;
 
-            div.style.height = level + 'px';
-            div.style.top = (_containerHeight - level) / 2 + 'px';
-            div.style.backgroundImage = getBackgroundImage(c1, c2);
-            div._level = level;
+            const level = Math.floor((levels[index] || 0) / 255 * 100);
+
+            bar._color.set({s: level, l: 10 + level * .7});
+
+            const height = Math.floor(level * .5);
+            bar.style.height = height + '%';
+            bar.style.top = (100 - height) / 2 + '%';
+
+            bar.style.backgroundImage = getBackgroundImageString(bar);
+
+            bar._level = levels[index];
         });
+
+        return this;
     };
 
     this.forEach = (callback) => {
-        _bars.forEach.call(_bars, callback);
+        _barPairs.forEach.call(_barPairs, callback);
         return this;
     };
 
@@ -67,8 +89,8 @@ function Spectrogram (size, className = 'analyser') {
      */
     this.renderTo = (container) => {
         _container = container;
-        _containerHeight = _container.clientHeight;
-        _bars.forEach((bar) => { container.appendChild(bar); });
+        //_containerHeight = _container.clientHeight;
+        _barPairs.forEach((bar) => { container.appendChild(bar); });
         return this;
     };
 
@@ -77,11 +99,11 @@ function Spectrogram (size, className = 'analyser') {
             self = this,
             _interval = 1000 / ticksPerSecond;
 
-        _bars.forEach((div) => {
+        _barPairs.forEach((div) => {
             levels.push(div._level);
         });
 
-        let fn = () => {
+        function _doFade () {
             let needUpdates = false;
             levels = levels.map((l) => {
                 if (l > 0) {
@@ -94,13 +116,13 @@ function Spectrogram (size, className = 'analyser') {
             self.update(levels);
 
             if (needUpdates) {
-                fadeoutTimerId = setTimeout(fn, _interval);
+                fadeoutTimerId = setTimeout(_doFade, _interval);
             } else {
                 fadeoutTimerId = null;
             }
-        };
+        }
 
-        fn();
+        _doFade();
     };
 
     this.cancelFadeOut = () => {
@@ -112,12 +134,12 @@ function Spectrogram (size, className = 'analyser') {
 
     this.destroy = () => {
         if (_container) {
-            _bars.forEach((div) => {
+            _barPairs.forEach((div) => {
                 _container.removeChild(div);
             });
-            _bars = [];
+            _barPairs = [];
             _container = null;
-            _containerHeight = null;
+            //_containerHeight = null;
         }
     };
 

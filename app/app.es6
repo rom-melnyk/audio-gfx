@@ -44,7 +44,10 @@ function onBufferLoaded (source) {
     sound.attachNodes([analyser.node]);
 
     spectrogram = new Spectrogram(ANALYSER_BARS_COUNT);
-    spectrogram.renderTo(document.body);
+    spectrogram.renderTo(
+        _createSpectrogramWrapper()
+    );
+
     KeyHandler.handle(KeyHandler.KEY_SPACE, playPause);
 }
 
@@ -55,8 +58,15 @@ function playPause () {
         analyser.startCapturing((levels) => { spectrogram.update(levels); }, ANALYSER_TICKS_PER_SECOND);
     } else {
         sound.pause();
-        analyser.stopCapturing(() => { spectrogram.fadeOut(ANALYSER_TICKS_PER_SECOND, .5); });
+        analyser.stopCapturing(() => { /*spectrogram.fadeOut(ANALYSER_TICKS_PER_SECOND, .5);*/ });
     }
+}
+
+function _createSpectrogramWrapper () {
+    const div = document.createElement('div');
+    div.className = 'spectrogram';
+    document.body.appendChild(div);
+    return div;
 }
 
 window.addEventListener('load', onLoad, true);
