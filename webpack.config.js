@@ -1,20 +1,22 @@
+const path = require('path');
+
 module.exports = {
-    entry: ['./app/app.es6'],
+    entry: [ './app/app.ts' ],
     output: {
-        path: __dirname + '/bundle',
-        publicPath: '/bundle/',
-        filename: 'bundle.js'
+        path: path.join(__dirname, '/demo/js'),
+        publicPath: '/js/',
+        filename: 'script.js'
+    },
+    resolve: {
+        extensions: [ '.ts', '.js' ]
     },
     module: {
-        loaders: [
-            { test: /\.css$/, loader: 'style!css' },
-            { test: /\.json$/, loader: 'json-loader' },
-            { test: /\.hson$/, loader: 'hson-loader' },
-            { test: /\.es6?$/, exclude: /node_modules/, loader: 'babel-loader'}
+        rules: [
+            { test: /\.ts$/, loader: "ts-loader" }
         ]
     },
-    debug: true,
-    devtool: 'source-map',
+    mode: 'development',
+    devtool: 'inline-source-map',
     devServer: {
         hot: true,
         inline: true

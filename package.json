@@ -17,25 +17,18 @@
   "author": {
     "name": "Roman Melnyk",
     "email": "email.rom.melnyk@gmail.com",
-    "url": "https://codedoc255.wordpress.com"
+    "url": "https://melnyk.site"
   },
   "license": "ISC",
-  "main": "app/app.es6",
+  "main": "app/app.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prod": "webpack --progress --colors",
+    "prod": "webpack -p --progress --colors",
     "dev": "webpack-dev-server --colors --hot"
   },
   "devDependencies": {
-    "babel-core": "^5.8.22",
-    "babel-loader": "^5.3.2",
-    "color-js": "git://github.com/rom-melnyk/color.js",
-    "css-loader": "^0.16.0",
-    "hanson": "^1.1.1",
-    "hson-loader": "^1.0.0",
-    "json-loader": "^0.5.4",
-    "style-loader": "^0.12.3",
-    "webpack": "^1.11.0",
-    "webpack-dev-server": "^1.10.1"
+    "ts-loader": "^4.3.0",
+    "webpack": "^4.8.3",
+    "webpack-dev-server": "^3.1.4"
   }
 }
