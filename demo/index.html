@@ -9,14 +9,26 @@
 <body>
     <div class="main-content">
         <div class="player">
+            <select class="track-picker">
+                <option value="" selected="selected">Pick an audio track</option>
+                <option value="./audio/Dj Boyko  Sound Shocking - Травa (Гимн Маевки Казантипа).mp3">DJ Бойко</option>
+                <option value="./audio/dj_aphrodite_-_fanfare_(bomber_mix)_(zvukoff.ru).mp3">DJ Aphrodite</option>
+            </select>
+            <audio class="player" controls="controls">
+                Your browser does not support the <code>&lt;audio&gt;</code> element.
+            </audio>
         </div>
-        <div class="visualization-original"></div>
-        <div class="effect-picker">
-            <select>
+        <div class="visualization original">
+            <canvas></canvas>
+        </div>
+        <div class="effect-controls">
+            <select class="effect-picker">
                 <option></option>
             </select>
         </div>
-        <div class="visualization-modified"></div>
+        <div class="visualization modified">
+            <canvas></canvas>
+        </div>
     </div>
 </body>
 </html>
