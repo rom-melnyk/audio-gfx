@@ -4,7 +4,7 @@ module.exports = {
     entry: [ './app/app.ts' ],
     output: {
         path: path.join(__dirname, '/demo/js'),
-        publicPath: '/js/',
+        publicPath: '/js/', // required for webpack-dev-server
         filename: 'script.js'
     },
     resolve: {
@@ -18,7 +18,9 @@ module.exports = {
     mode: 'development',
     devtool: 'inline-source-map',
     devServer: {
+        contentBase: path.join(__dirname, '/demo'),
         hot: true,
-        inline: true
+        inline: true,
+        port: 8080,
     }
 };
