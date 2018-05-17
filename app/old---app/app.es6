@@ -1,8 +1,8 @@
-import './style.css';
+import '../style.css';
 
-import initAudioContext from './init-audio-context.es6';
-import loadSoundFromBuffer from './loaders/load-sound-from-buffer.es6';
-import loadSoundFromElement from './loaders/load-sound-from-element.es6';
+import initAudioContext from './init-audio-context.ts';
+import loadSoundFromBuffer from './loaders/load-sound-from-buffer.ts';
+import loadSoundFromElement from './loaders/load-sound-from-element.ts';
 
 import Config from './config.hson';
 
