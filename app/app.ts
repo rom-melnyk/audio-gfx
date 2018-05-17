@@ -1,22 +1,33 @@
-import { Observable } from 'rxjs';
+import { Observable, Observer } from 'rxjs';
 import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/observable/fromPromise';
+import 'rxjs/add/observable/interval';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/combineLatest';
 
-import { ErrorMessages, iError } from './error-constants';
-import { audioContextStream } from './audio-context';
-import { AudioElement } from './audio-element';
+import { ErrorCodes, ErrorMessages, iError } from './error-constants';
+import {
+  isCompatible,
+  createAudioContext,
+  attachAnalyzerToAudioElement,
+  getContext,
+  getAnalyser
+} from './audio-context';
 
+
+const BARS = 32;
+const FPS = 1;
 
 function runDemo() {
   const trackPickerEl = <HTMLElement>document.querySelector('.track-picker');
   const effectPickerEl = <HTMLElement>document.querySelector('.effect-picker');
+  const audioElement = <HTMLAudioElement>document.querySelector('audio');
 
-  const audioElement = new AudioElement( <HTMLAudioElement>document.querySelector('audio') );
-  //
+  createAudioContext();
+  attachAnalyzerToAudioElement(audioElement);
+  const analyser = getAnalyser();
+
   const stream = Observable.fromEvent(trackPickerEl, 'change')
     .map((event: Event) => (<HTMLSelectElement>event.target).value)
     .do((url: string) => {
@@ -27,8 +38,25 @@ function runDemo() {
       }
       audioElement.src = url;
     })
-    .mergeMap(() => audioElement.updateSourceStream())
-    .combineLatest(audioContextStream())
+    .mergeMap(() => {
+      return Observable.create((observer: Observer<boolean>) => {
+        audioElement.oncanplay = () => observer.next(true);
+        audioElement.onerror = (err) => {
+          if (audioElement.src && audioElement.src !== location.href) {
+            observer.error({ code: ErrorCodes.LOADING_FAILED, debug: err });
+          } // otherwise src was set to ""
+        };
+      });
+    })
+    .mergeMap(() => {
+      return Observable.interval( Math.round( 1000 / FPS ) )
+      .map(() => {
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+        analyser.getByteFrequencyData(dataArray);
+        return dataArray;
+      });
+    })
   ;
 
   stream.subscribe(
@@ -37,7 +65,11 @@ function runDemo() {
     },
     (err: iError) => {
       const { code, debug } = err;
-      console.error(ErrorMessages[code], debug);
+      if (code !== undefined && debug !== undefined) {
+        console.error(ErrorMessages[ code ], debug);
+      } else {
+        console.error('Unrecognized error:', debug);
+      }
     }
   );
 
