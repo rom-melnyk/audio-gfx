@@ -1,5 +1,10 @@
 {
   "compilerOptions": {
+    "target": "es2015",
+    "module": "es6",
+    "strict": true,
+    "allowJs": true,
+    "moduleResolution": "node",
     "sourceMap": true
   }
 }
