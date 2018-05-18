@@ -15,10 +15,11 @@ import {
   getContext,
   getAnalyser
 } from './audio-context';
+import { Visualizer } from './visualizer';
 
 
 const BARS = 32;
-const FPS = 1;
+const FPS = 16;
 
 
 function nextHandler (data: any): void {
@@ -41,6 +42,11 @@ function runDemo() {
   const trackPickerEl = <HTMLElement>document.querySelector('.track-picker');
   const effectPickerEl = <HTMLElement>document.querySelector('.effect-picker');
   const audioElement = <HTMLAudioElement>document.querySelector('audio');
+
+  const canvasOriginal = <HTMLCanvasElement>document.querySelector('.visualization.original canvas');
+  const canvasModified = <HTMLCanvasElement>document.querySelector('.visualization.modified canvas');
+  const visualizerOriginal = new Visualizer(canvasOriginal);
+  const visualizerModified = new Visualizer(canvasModified);
 
   createAudioContext();
   attachAnalyzerToAudioElement(audioElement);
@@ -87,10 +93,12 @@ function runDemo() {
       return dataArray;
     })
     .combineLatest(playStream)
-    // .do(console.info)
     .filter((data: any) => { const [ , isPlaying ] = <[Uint8Array, boolean]>data; return isPlaying; })
     .map((data: any) => { const [ analyserData ] = <[Uint8Array, boolean]>data; return analyserData; })
-    .do(console.warn)
+    .do((data: Uint8Array) => {
+      // console.info(data);
+      visualizerOriginal.drawBars(data);
+    })
     .subscribe(emptyHandler, errorHandler);
 
 

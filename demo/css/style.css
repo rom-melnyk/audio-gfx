@@ -53,7 +53,7 @@ select option {
 }
 
 .visualization {
-  height: 5rem;
+  height: 10rem;
   border: 1px solid var(--color-dark);
 }
 .visualization canvas {
