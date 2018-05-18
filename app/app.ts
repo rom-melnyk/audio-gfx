@@ -5,6 +5,7 @@ import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/combineLatest';
+import 'rxjs/add/operator/filter';
 
 import { ErrorCodes, ErrorMessages, iError } from './error-constants';
 import {
@@ -19,6 +20,23 @@ import {
 const BARS = 32;
 const FPS = 1;
 
+
+function nextHandler (data: any): void {
+  console.log(data);
+}
+
+function emptyHandler() {}
+
+function errorHandler (err: iError): void {
+  const { code, debug } = err;
+  if (code !== undefined && debug !== undefined) {
+    console.error(ErrorMessages[ code ], debug);
+  } else {
+    console.error('Unrecognized error:', debug);
+  }
+}
+
+
 function runDemo() {
   const trackPickerEl = <HTMLElement>document.querySelector('.track-picker');
   const effectPickerEl = <HTMLElement>document.querySelector('.effect-picker');
@@ -28,7 +46,8 @@ function runDemo() {
   attachAnalyzerToAudioElement(audioElement);
   const analyser = getAnalyser();
 
-  const stream = Observable.fromEvent(trackPickerEl, 'change')
+  // -------- track change --------
+  Observable.fromEvent(trackPickerEl, 'change')
     .map((event: Event) => (<HTMLSelectElement>event.target).value)
     .do((url: string) => {
       if (url) {
@@ -38,42 +57,41 @@ function runDemo() {
       }
       audioElement.src = url;
     })
-    .mergeMap(() => {
-      return Observable.create((observer: Observer<boolean>) => {
-        audioElement.oncanplay = () => observer.next(true);
-        audioElement.onerror = (err) => {
-          if (audioElement.src && audioElement.src !== location.href) {
-            observer.error({ code: ErrorCodes.LOADING_FAILED, debug: err });
-          } // otherwise src was set to ""
-        };
+    .subscribe(emptyHandler, errorHandler);
+
+  // -------- can play? --------
+  Observable.create((observer: Observer<boolean>) => {
+      audioElement.addEventListener('canplay', () => observer.next(true));
+      audioElement.addEventListener('error', (err) => {
+        if (audioElement.src && audioElement.src !== location.href) {
+          observer.error({ code: ErrorCodes.LOADING_FAILED, debug: err });
+        } // otherwise src was set to ""
       });
     })
-    .mergeMap(() => {
-      return Observable.interval( Math.round( 1000 / FPS ) )
-      .map(() => {
-        const bufferLength = analyser.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
-        analyser.getByteFrequencyData(dataArray);
-        return dataArray;
-      });
+    .subscribe(emptyHandler, errorHandler);
+
+  // -------- does it play? --------
+  const playStream = Observable.create((observer: Observer<boolean>) => {
+    audioElement.addEventListener('play', () =>observer.next(true));
+    audioElement.addEventListener('pause', () =>observer.next(false));
+    audioElement.addEventListener('ended', () =>observer.next(false));
+    audioElement.addEventListener('error', () =>observer.next(false));
+  });
+
+  // -------- poll the analyser --------
+  Observable.interval( Math.round( 1000 / FPS ) )
+    .map(() => {
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      analyser.getByteFrequencyData(dataArray);
+      return dataArray;
     })
-  ;
-
-  stream.subscribe(
-    (data) => {
-      console.log(data);
-    },
-    (err: iError) => {
-      const { code, debug } = err;
-      if (code !== undefined && debug !== undefined) {
-        console.error(ErrorMessages[ code ], debug);
-      } else {
-        console.error('Unrecognized error:', debug);
-      }
-    }
-  );
-
-
+    .combineLatest(playStream)
+    // .do(console.info)
+    .filter((data: any) => { const [ , isPlaying ] = <[Uint8Array, boolean]>data; return isPlaying; })
+    .map((data: any) => { const [ analyserData ] = <[Uint8Array, boolean]>data; return analyserData; })
+    .do(console.warn)
+    .subscribe(emptyHandler, errorHandler);
 
 
 }
