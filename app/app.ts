@@ -52,6 +52,20 @@ function runDemo() {
   attachAnalyzerToAudioElement(audioElement);
   const analyser = getAnalyser();
 
+  // -------- prepare audio files --------
+  fetch('./audio/audio-src.json')
+    .then((res: Response) => res.json())
+    .then((files: string[]) => {
+      console.log(`${files.length} audio file(-s) detected`);
+      files.forEach((f: string) => {
+        const optionEl = document.createElement('option');
+        optionEl.value = './audio/' + f;
+        optionEl.innerText = f.replace(/_/g, ' ');
+        trackPickerEl.appendChild(optionEl);
+      });
+    })
+    .catch(console.error);
+
   // -------- track change --------
   Observable.fromEvent(trackPickerEl, 'change')
     .map((event: Event) => (<HTMLSelectElement>event.target).value)

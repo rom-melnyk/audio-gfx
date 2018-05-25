@@ -26,7 +26,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prod": "webpack -p --progress --colors",
-    "dev": "webpack-dev-server --colors --hot"
+    "dev": "node audio-src.js && webpack-dev-server --colors --hot"
+  },
+  "engines": {
+    "node": ">=8.0.0"
   },
   "devDependencies": {
     "ts-loader": "^4.3.0",
