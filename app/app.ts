@@ -1,8 +1,11 @@
 import { Observable, Observer } from 'rxjs';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/observable/interval';
+import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/mapTo';
+import 'rxjs/add/operator/merge';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/combineLatest';
 import 'rxjs/add/operator/filter';
@@ -90,28 +93,40 @@ function runDemo() {
     })
     .subscribe(emptyHandler, errorHandler);
 
-  // -------- does it play? --------
-  const playStream = Observable.create((observer: Observer<boolean>) => {
-    audioElement.addEventListener('play', () =>observer.next(true));
-    audioElement.addEventListener('pause', () =>observer.next(false));
-    audioElement.addEventListener('ended', () =>observer.next(false));
-    audioElement.addEventListener('error', () =>observer.next(false));
-  });
+  // -------- keypress analyzer --------
+  const keyUpStream = Observable.fromEvent(window, 'keyup')
+    .mapTo(false);
+  const keyDownStream = Observable.fromEvent(window, 'keydown')
+    .map((e: Event) => (<KeyboardEvent>e).shiftKey);
+  const kbdStream = Observable.of(false) // initial value
+    .merge(keyUpStream)
+    .merge(keyDownStream)
+    .do((v: boolean) => console.info(`Shift is ${ v ? '' : 'not' } pressed`));
 
   // -------- poll the analyser --------
+  const analyzerCache: boolean[] = [];
+  const analyzerCacheLength = 3;
   Observable.interval( Math.round( 1000 / FPS ) )
     .map(() => {
       const bufferLength = analyser.frequencyBinCount;
       const dataArray = new Uint8Array(bufferLength);
-      analyser.getByteFrequencyData(dataArray);
+      analyser.getByteFrequencyData(dataArray); // for bars
+      // analyser.getByteTimeDomainData(dataArray); // for waveform
       return dataArray;
     })
-    .combineLatest(playStream)
-    .filter((data: any) => { const [ , isPlaying ] = <[Uint8Array, boolean]>data; return isPlaying; })
-    .map((data: any) => { const [ analyserData ] = <[Uint8Array, boolean]>data; return analyserData; })
     .do((data: Uint8Array) => {
+      if (analyzerCache.length === analyzerCacheLength) {
+        analyzerCache.shift();
+      }
+      const hasCurrentAnalyzerData = data.some((val: number) => val > 0);
+      analyzerCache.push(hasCurrentAnalyzerData);
+    })
+    .filter(() => analyzerCache.some((hasData: boolean) => hasData))
+    .combineLatest(kbdStream)
+    .do((data: [Uint8Array, boolean]) => {
       // console.info(data);
-      visualizerOriginal.drawBars(data);
+      const [ analyzerData, isShiftPressed ] = data;
+      visualizerOriginal.drawBars(analyzerData, isShiftPressed);
     })
     .subscribe(emptyHandler, errorHandler);
 

@@ -1,3 +1,6 @@
+const DEFAULT_COLOR = 'hsl(210, 10%, 80%)';
+
+
 class Visualizer {
   private width: number;
   private height: number;
@@ -14,7 +17,7 @@ class Visualizer {
     this.gapFactor = .1;
   }
 
-  drawBars(data: Uint8Array) {
+  drawBars(data: Uint8Array, colorize: boolean = false) {
     this.ctx.clearRect(0, 0, this.width, this.height);
 
     const n = data.length;
@@ -25,7 +28,9 @@ class Visualizer {
 
     for (let i = 0; i < n; i++) {
       const barHeight = data[ i ] / 256 * ( this.height - 2 * gapWidth );
-      this.ctx.fillStyle = 'hsl(210, 10%, 80%)';
+      this.ctx.fillStyle = colorize
+        ? `hsl(${ Math.floor(360 * i / n) }, 50%, 50%)`
+        : DEFAULT_COLOR;
       this.ctx.fillRect(
         gapWidth + (barWidth + gapWidth) * i,
         (this.height - barHeight) / 2,
