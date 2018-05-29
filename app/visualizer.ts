@@ -17,7 +17,7 @@ class Visualizer {
     this.gapFactor = .1;
   }
 
-  drawBars(data: Uint8Array, colorize: boolean = false) {
+  drawBars(data: Uint8Array | number[], colorize: boolean = false) {
     this.ctx.clearRect(0, 0, this.width, this.height);
 
     const n = data.length;

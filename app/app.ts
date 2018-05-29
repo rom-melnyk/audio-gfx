@@ -21,8 +21,8 @@ import {
 import { Visualizer } from './visualizer';
 
 
-const BARS = 32;
-const FPS = 16;
+const FFT_SIZE = 128;
+const FPS = 25;
 
 
 function nextHandler (data: any): void {
@@ -52,7 +52,7 @@ function runDemo() {
   const visualizerModified = new Visualizer(canvasModified);
 
   createAudioContext();
-  attachAnalyzerToAudioElement(audioElement);
+  attachAnalyzerToAudioElement(audioElement, { fftSize: FFT_SIZE });
   const analyser = getAnalyser();
 
   // -------- prepare audio files --------
@@ -101,12 +101,16 @@ function runDemo() {
   const kbdStream = Observable.of(false) // initial value
     .merge(keyUpStream)
     .merge(keyDownStream)
-    .do((v: boolean) => console.info(`Shift is ${ v ? '' : 'not' } pressed`));
+    .do((v: boolean) => {
+      if (v) {
+        console.info('Shift is pressed');
+      }
+    });
 
   // -------- poll the analyser --------
   const analyzerCache: boolean[] = [];
   const analyzerCacheLength = 3;
-  Observable.interval( Math.round( 1000 / FPS ) )
+  const analyzerStream = Observable.interval( Math.round( 1000 / FPS ) )
     .map(() => {
       const bufferLength = analyser.frequencyBinCount;
       const dataArray = new Uint8Array(bufferLength);
@@ -121,8 +125,9 @@ function runDemo() {
       const hasCurrentAnalyzerData = data.some((val: number) => val > 0);
       analyzerCache.push(hasCurrentAnalyzerData);
     })
-    .filter(() => analyzerCache.some((hasData: boolean) => hasData))
-    .combineLatest(kbdStream)
+    .filter(() => analyzerCache.some((hasData: boolean) => hasData));
+
+  analyzerStream.combineLatest(kbdStream)
     .do((data: [Uint8Array, boolean]) => {
       // console.info(data);
       const [ analyzerData, isShiftPressed ] = data;
@@ -130,7 +135,37 @@ function runDemo() {
     })
     .subscribe(emptyHandler, errorHandler);
 
+  const bassThreshold = Math.round(analyser.frequencyBinCount * .33);
+  const trebleThreshold = Math.round(analyser.frequencyBinCount * .67);
 
+  Observable.interval( Math.round( 1000 / FPS ) )
+    .map(() => { return { timestamp: Date.now() }; })
+    .combineLatest(
+      analyzerStream
+        .map((data: Uint8Array) => data.slice(trebleThreshold))
+        .filter((data: Uint8Array) => data.reduce((acc: number, val: number) => val + acc, 0) / data.length > 64)
+        .map((data: Uint8Array) => {
+          return {
+            timestamp: Date.now(),
+            analyzerData: Array(trebleThreshold).fill(0).concat([...data])
+          };
+        })
+    )
+    .map((data) => {
+      const [ { timestamp }, { timestamp: analyzerTimestamp, analyzerData } ] = data;
+      if (analyzerTimestamp > timestamp) {
+        return analyzerData;
+      }
+      return analyzerData.map((v) => {
+        if (v < .5 || timestamp - analyzerTimestamp > 1000) return 0;
+        const fading = 1 - (timestamp - analyzerTimestamp) / 1000;
+        return v * fading;
+      });
+    })
+    .do((data: number[]) => {
+      visualizerModified.drawBars(data);
+    })
+    .subscribe(emptyHandler, errorHandler);
 }
 
 

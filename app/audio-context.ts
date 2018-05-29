@@ -24,7 +24,7 @@ function createAudioContext(): void {
 }
 
 
-function attachAnalyzerToAudioElement(element: HTMLAudioElement, { fft = 32 } = {}) {
+function attachAnalyzerToAudioElement(element: HTMLAudioElement, { fftSize = 128 } = {}) {
   if (analyser) {
     return;
   }
@@ -32,8 +32,8 @@ function attachAnalyzerToAudioElement(element: HTMLAudioElement, { fft = 32 } = 
   analyser = context.createAnalyser();
   analyser.minDecibels = -100;
   analyser.maxDecibels = -30;
-  analyser.smoothingTimeConstant = .6;
-  analyser.fftSize = fft;
+  analyser.smoothingTimeConstant = .4;
+  analyser.fftSize = fftSize;
 
   const source = context.createMediaElementSource(element);
   source.connect(analyser);
