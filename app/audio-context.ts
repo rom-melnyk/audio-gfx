@@ -24,7 +24,7 @@ function createAudioContext(): void {
 }
 
 
-function attachAnalyzerToAudioElement(element: HTMLAudioElement, { fftSize = 128 } = {}) {
+function attachAnalyserToAudioElement(element: HTMLAudioElement, { fftSize = 128 } = {}) {
   if (analyser) {
     return;
   }
@@ -49,7 +49,7 @@ function getAnalyser(): AnalyserNode { return analyser; }
 export {
   isCompatible,
   createAudioContext,
-  attachAnalyzerToAudioElement,
+  attachAnalyserToAudioElement,
   getContext,
   getAnalyser
 };

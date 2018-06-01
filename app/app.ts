@@ -14,7 +14,7 @@ import { ErrorCodes, ErrorMessages, iError } from './error-constants';
 import {
   isCompatible,
   createAudioContext,
-  attachAnalyzerToAudioElement,
+  attachAnalyserToAudioElement,
   getContext,
   getAnalyser
 } from './audio-context';
@@ -52,7 +52,7 @@ function runDemo() {
   const visualizerModified = new Visualizer(canvasModified);
 
   createAudioContext();
-  attachAnalyzerToAudioElement(audioElement, { fftSize: FFT_SIZE });
+  attachAnalyserToAudioElement(audioElement, { fftSize: FFT_SIZE });
   const analyser = getAnalyser();
 
   // -------- prepare audio files --------
@@ -93,7 +93,7 @@ function runDemo() {
     })
     .subscribe(emptyHandler, errorHandler);
 
-  // -------- keypress analyzer --------
+  // -------- keypress analyser --------
   const keyUpStream = Observable.fromEvent(window, 'keyup')
     .mapTo(false);
   const keyDownStream = Observable.fromEvent(window, 'keydown')
@@ -108,9 +108,9 @@ function runDemo() {
     });
 
   // -------- poll the analyser --------
-  const analyzerCache: boolean[] = [];
-  const analyzerCacheLength = 3;
-  const analyzerStream = Observable.interval( Math.round( 1000 / FPS ) )
+  const analyserCache: boolean[] = [];
+  const analyserCacheLength = 3;
+  const analyserStream = Observable.interval( Math.round( 1000 / FPS ) )
     .map(() => {
       const bufferLength = analyser.frequencyBinCount;
       const dataArray = new Uint8Array(bufferLength);
@@ -119,46 +119,52 @@ function runDemo() {
       return dataArray;
     })
     .do((data: Uint8Array) => {
-      if (analyzerCache.length === analyzerCacheLength) {
-        analyzerCache.shift();
+      if (analyserCache.length === analyserCacheLength) {
+        analyserCache.shift();
       }
-      const hasCurrentAnalyzerData = data.some((val: number) => val > 0);
-      analyzerCache.push(hasCurrentAnalyzerData);
+      const hasCurrentAnalyserData = data.some((val: number) => val > 0);
+      analyserCache.push(hasCurrentAnalyserData);
     })
-    .filter(() => analyzerCache.some((hasData: boolean) => hasData));
+    .filter(() => analyserCache.some((hasData: boolean) => hasData));
 
-  analyzerStream.combineLatest(kbdStream)
+  analyserStream.combineLatest(kbdStream)
     .do((data: [Uint8Array, boolean]) => {
       // console.info(data);
-      const [ analyzerData, isShiftPressed ] = data;
-      visualizerOriginal.drawBars(analyzerData, isShiftPressed);
+      const [ analyserData, isShiftPressed ] = data;
+      visualizerOriginal.drawBars(analyserData, isShiftPressed);
     })
     .subscribe(emptyHandler, errorHandler);
 
   const bassThreshold = Math.round(analyser.frequencyBinCount * .33);
   const trebleThreshold = Math.round(analyser.frequencyBinCount * .67);
+  const bassLevelThreshold = 192;
+  const midRangeLevelThreshold = 128;
+  const trebleLevelThreshold = 64;
 
   Observable.interval( Math.round( 1000 / FPS ) )
     .map(() => { return { timestamp: Date.now() }; })
     .combineLatest(
-      analyzerStream
+      analyserStream
         .map((data: Uint8Array) => data.slice(trebleThreshold))
-        .filter((data: Uint8Array) => data.reduce((acc: number, val: number) => val + acc, 0) / data.length > 64)
+        .filter((data: Uint8Array) => {
+          const average = data.reduce((acc: number, val: number) => val + acc, 0) / data.length;
+          return average > trebleLevelThreshold;
+        })
         .map((data: Uint8Array) => {
           return {
             timestamp: Date.now(),
-            analyzerData: Array(trebleThreshold).fill(0).concat([...data])
+            analyserData: Array(trebleThreshold).fill(0).concat([...data])
           };
         })
     )
     .map((data) => {
-      const [ { timestamp }, { timestamp: analyzerTimestamp, analyzerData } ] = data;
-      if (analyzerTimestamp > timestamp) {
-        return analyzerData;
+      const [ { timestamp }, { timestamp: analyserTimestamp, analyserData } ] = data;
+      if (analyserTimestamp > timestamp) {
+        return analyserData;
       }
-      return analyzerData.map((v) => {
-        if (v < .5 || timestamp - analyzerTimestamp > 1000) return 0;
-        const fading = 1 - (timestamp - analyzerTimestamp) / 1000;
+      return analyserData.map((v) => {
+        if (v < .5 || timestamp - analyserTimestamp > 1000) return 0;
+        const fading = 1 - (timestamp - analyserTimestamp) / 1000;
         return v * fading;
       });
     })
