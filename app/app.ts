@@ -42,9 +42,10 @@ function errorHandler (err: iError): void {
 
 
 function runDemo() {
-  const trackPickerEl = <HTMLElement>document.querySelector('.track-picker');
-  const effectPickerEl = <HTMLElement>document.querySelector('.effect-picker');
+  const trackPickerEl = <HTMLSelectElement>document.querySelector('.track-picker');
+  const effectPickerEl = <HTMLSelectElement>document.querySelector('.effect-picker');
   const audioElement = <HTMLAudioElement>document.querySelector('audio');
+  const rangeElement = <HTMLInputElement>document.querySelector('input[type=range]');
 
   const canvasOriginal = <HTMLCanvasElement>document.querySelector('.visualization.original canvas');
   const canvasModified = <HTMLCanvasElement>document.querySelector('.visualization.modified canvas');
@@ -54,6 +55,9 @@ function runDemo() {
   createAudioContext();
   attachAnalyserToAudioElement(audioElement, { fftSize: FFT_SIZE });
   const analyser = getAnalyser();
+
+  const bassThreshold = Math.round(analyser.frequencyBinCount * .33);
+  const trebleThreshold = Math.round(analyser.frequencyBinCount * .67);
 
   // -------- prepare audio files --------
   fetch('./audio/audio-src.json')
@@ -107,6 +111,26 @@ function runDemo() {
       }
     });
 
+  // -------- effect picker --------
+  const effectStream = Observable.of(effectPickerEl.value)
+    .merge(
+      Observable.fromEvent(effectPickerEl, 'change')
+      .map((event: Event) => (<HTMLSelectElement>event.target).value)
+    )
+    .do((value: string) => {
+      console.log(`Modified visualizer should reflect "${value}"`);
+    });
+
+  // -------- threshold change --------
+  const thresholdStream = Observable.of(+rangeElement.value)
+    .merge(
+      Observable.fromEvent(rangeElement, 'change')
+        .map((event: Event) => +(<HTMLInputElement>event.target).value)
+    )
+    .do((value: number) => {
+      console.log(`Threshold set to "${value}"`);
+    });
+
   // -------- poll the analyser --------
   const analyserCache: boolean[] = [];
   const analyserCacheLength = 3;
@@ -135,41 +159,72 @@ function runDemo() {
     })
     .subscribe(emptyHandler, errorHandler);
 
-  const bassThreshold = Math.round(analyser.frequencyBinCount * .33);
-  const trebleThreshold = Math.round(analyser.frequencyBinCount * .67);
-  const bassLevelThreshold = 192;
-  const midRangeLevelThreshold = 128;
-  const trebleLevelThreshold = 64;
+  const analyserStreamWithEffect = analyserStream
+    .combineLatest(effectStream, thresholdStream)
+    .map((data: [Uint8Array, string, number]): [Uint8Array, string, number] => {
+      const [ analyserData, effect, threshold ] = data;
+      let newAnalyserData;
+      switch (effect) {
+        case 'bass':
+          newAnalyserData = analyserData.slice(0, bassThreshold);
+          break;
+        case 'mid':
+          newAnalyserData = analyserData.slice(bassThreshold, trebleThreshold);
+          break;
+        case 'treble':
+          newAnalyserData = analyserData.slice(trebleThreshold);
+          break;
+        default /* 'all' */ : newAnalyserData = analyserData;
+      }
+      return [ newAnalyserData, effect, threshold ];
+    })
+    .filter((data: [Uint8Array, string, number]) => {
+      const [ analyserData, , threshold ] = data;
+      const average = analyserData.reduce((acc: number, val: number) => val + acc, 0) / analyserData.length;
+      return average > threshold;
+    })
+    .map((data: [Uint8Array, string, number]) => {
+      const [ analyserData, effect ] = data;
+      let newAnalyserData: number[];
+      switch (effect) {
+        case 'bass':
+          newAnalyserData = [...analyserData].concat(
+            Array(analyser.frequencyBinCount - bassThreshold).fill(0)
+          );
+          break;
+        case 'mid': newAnalyserData = Array(bassThreshold).fill(0)
+          .concat([...analyserData])
+          .concat( Array(analyser.frequencyBinCount - trebleThreshold).fill(0) );
+          break;
+        case 'treble':
+          newAnalyserData = Array(trebleThreshold).fill(0).concat([...analyserData]);
+          break;
+        default /* 'all' */ : newAnalyserData = [...analyserData];
+      }
+      return {
+        timestamp: Date.now(),
+        analyserData: newAnalyserData
+      };
+    });
 
   Observable.interval( Math.round( 1000 / FPS ) )
     .map(() => { return { timestamp: Date.now() }; })
-    .combineLatest(
-      analyserStream
-        .map((data: Uint8Array) => data.slice(trebleThreshold))
-        .filter((data: Uint8Array) => {
-          const average = data.reduce((acc: number, val: number) => val + acc, 0) / data.length;
-          return average > trebleLevelThreshold;
-        })
-        .map((data: Uint8Array) => {
-          return {
-            timestamp: Date.now(),
-            analyserData: Array(trebleThreshold).fill(0).concat([...data])
-          };
-        })
-    )
+    .combineLatest(analyserStreamWithEffect)
     .map((data) => {
       const [ { timestamp }, { timestamp: analyserTimestamp, analyserData } ] = data;
       if (analyserTimestamp > timestamp) {
         return analyserData;
       }
       return analyserData.map((v) => {
-        if (v < .5 || timestamp - analyserTimestamp > 1000) return 0;
+        if (v < 1 && v !== 0 || timestamp - analyserTimestamp > 1000) return 0;
         const fading = 1 - (timestamp - analyserTimestamp) / 1000;
         return v * fading;
       });
     })
-    .do((data: number[]) => {
-      visualizerModified.drawBars(data);
+    .combineLatest(kbdStream)
+    .do((data: [number[], boolean]) => {
+      const [ analyserData, isShiftPressed ] = data;
+      visualizerModified.drawBars(analyserData, isShiftPressed);
     })
     .subscribe(emptyHandler, errorHandler);
 }

@@ -11,7 +11,7 @@
 
 body {
   font-family: sans-serif;
-  font-size: 20px;
+  font-size: 16px;
   background-color: var(--color-light);
 }
 
@@ -34,19 +34,25 @@ body {
 }
 
 
+input, select, option {
+  font-size: 1rem;
+}
 select {
   width: 100%;
-  font-size: 1rem;
+  margin-bottom: .5rem;
   padding: .25rem;
+  font-size: 1rem;
 }
 select option {
   padding: .25rem;
 }
-
-
-.player select {
+input[type=range] {
+  width: 100%;
+  padding: 0;
   margin-bottom: .5rem;
 }
+
+
 .player audio {
   width: 100%;
   background-color: var(--color-light);
