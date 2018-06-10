@@ -29,9 +29,9 @@
   "scripts": {
     "audio-src": "node audio-src.js",
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "test": "ng test",
+    "start": "node audio-src.js && ng serve",
+    "build": "node audio-src.js && ng build",
+    "test": "node audio-src.js && ng test",
     "lint": "ng lint",
     "e2e": "node audio-src.js && ng e2e"
   },

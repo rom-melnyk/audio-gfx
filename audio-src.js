@@ -5,8 +5,8 @@ const path = require('path');
 const readdir = promisify(fs.readdir);
 const writeFile = promisify(fs.writeFile);
 
-const AUDIO_DIR = path.join(__dirname, 'dist/audio');
-const JSON_FILE = path.join(AUDIO_DIR, 'audio-src.json');
+const AUDIO_DIR = path.join(__dirname, 'src/assets/audio');
+const JSON_FILE = path.join(AUDIO_DIR, 'audio-files.json');
 const AUDIO_FILE_MASK = /\.(mp3|ogg|oga|wav|wma)$/i;
 
 readdir(AUDIO_DIR)

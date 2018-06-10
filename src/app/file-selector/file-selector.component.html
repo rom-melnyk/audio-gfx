@@ -1,0 +1,4 @@
+<select class="track-picker">
+  <option value="" selected="selected">Pick an audio track</option>
+  <option *ngFor="let file of audioFiles" value="./assets/audio/{{file}}">{{file | filename}}</option>
+</select>
