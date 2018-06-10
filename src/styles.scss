@@ -1,9 +1,5 @@
+@import "styles/constants";
 @import "styles/forms";
-
-
-$color-light: hsl(210, 10%, 80%);
-$color-dark: hsl(210, 10%, 30%);
-$color-darker: hsl(210, 10%, 20%);
 
 
 * {
@@ -17,27 +13,7 @@ body {
 }
 
 
-.main-content {
-  width: 80%;
-  min-width: 20rem;
-  max-width: 50rem;
-  margin: 2rem auto;
-  padding: 2rem;
-  background-color: #ffffff;
-  box-shadow: 0 0 2rem 0 $color-dark;
-  border-radius: 1rem;
-
-  & > * {
-    margin-bottom: 2rem;
-  }
-  & > *:last-child {
-    margin-bottom: 0;
-  }
-}
-
-
-
-
+// TODO move following to components
 .player audio {
   width: 100%;
   //background-color: $color-light;
