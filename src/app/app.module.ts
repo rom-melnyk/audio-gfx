@@ -5,6 +5,7 @@ import { AppComponent } from './components/app-component/app.component';
 import { FileSelectorComponent } from './components/file-selector/file-selector.component';
 import { FilenamePipe } from './pipes/filename/filename.pipe';
 import { AudioPlayerComponent } from './components/audio-player/audio-player.component';
+import { NodeGeneralComponent } from './components/node-general/node-general.component';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,8 @@ import { AudioPlayerComponent } from './components/audio-player/audio-player.com
 
     // --- pipes ---
     FilenamePipe,
+
+    NodeGeneralComponent,
   ],
   imports: [
     BrowserModule

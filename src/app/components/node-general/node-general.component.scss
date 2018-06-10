@@ -1,0 +1,27 @@
+@import "../../../styles/constants";
+
+
+.node {
+  border: 1px solid $color-dark;
+  padding: 1rem;
+  position: relative;
+
+  &.is-in-the-middle{
+    margin-bottom: 2rem;
+
+    &::after {
+      content: "";
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      border-right: 1px solid $color-dark;
+      border-bottom: 1px solid $color-dark;
+      background-color: #ffffff;
+
+      position: absolute;
+      left: 50%;
+      bottom: -1px;
+      transform: translate(-50%, 50%) rotate(45deg);
+    }
+  }
+}
