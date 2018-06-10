@@ -1,9 +1,7 @@
 <div class="main-content">
   <div class="player">
     <app-file-selector (audioFile)="onAudioFile($event)"></app-file-selector>
-    <audio class="player" controls="controls" src={{audioFile}}>
-      Your browser does not support the <code>&lt;audio&gt;</code> element.
-    </audio>
+    <app-audio-player [audioFile]="audioFile"></app-audio-player>
   </div>
   <div class="visualization original">
     <canvas></canvas>
