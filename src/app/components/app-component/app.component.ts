@@ -6,4 +6,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  public audioFile = '';
+
+  constructor() {}
+
+  onAudioFile(file: string) {
+    this.audioFile = file;
+  }
 }
