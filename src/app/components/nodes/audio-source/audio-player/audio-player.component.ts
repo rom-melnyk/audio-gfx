@@ -6,7 +6,7 @@ import { Component, OnInit, Input } from '@angular/core';
     <audio controls="controls" src={{audioFile}}>
       Your browser does not support the <code>&lt;audio&gt;</code> element.
     </audio>
-`,
+  `,
   styles: [
     'audio { width: 100%; }'
   ]
