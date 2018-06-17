@@ -1,12 +1,13 @@
 @import "../../../styles/constants";
+@import "../../../styles/common";
 
 
 .node {
   border: 1px solid $color-dark;
-  padding: 1rem;
   position: relative;
 
-  &.is-in-the-middle{
+  // a tip arrow in the bottom
+  &:not(.is-last) {
     margin-bottom: 2rem;
 
     &::after {
@@ -22,6 +23,33 @@
       left: 50%;
       bottom: -1px;
       transform: translate(-50%, 50%) rotate(45deg);
+    }
+  }
+
+  & > *:last-child {
+    margin: 1rem;
+  }
+
+
+  header {
+    @extend .clear-fix;
+    padding: 0.25rem 1rem;
+    background-color: $color-dark;
+
+
+    .title {
+      float: left;
+      width: 90%;
+      margin: 0;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #ffffff;
+    }
+
+    .remove-button {
+      float: right;
+      margin: 0;
     }
   }
 }
