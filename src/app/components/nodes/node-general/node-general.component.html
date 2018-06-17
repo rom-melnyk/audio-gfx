@@ -1,7 +1,9 @@
 <div class="node" [class.is-last]="isLast">
   <header>
-    <h6 class="name">{{node?.name}}</h6>
-    <h6 class="remove-button" *ngIf="node?.isRemovable">X</h6>
+    <h4 class="name">{{node?.name}}</h4>
+    <div class="remove-button" *ngIf="node?.isRemovable">
+      <button (click)="onRemoveNode()">X</button>
+    </div>
   </header>
   <section [ngSwitch]="node?.type">
     <app-audio-source *ngSwitchCase="NodeTypes.AudioSourceNode"></app-audio-source>
@@ -9,3 +11,4 @@
     <div class="unknown" *ngSwitchDefault>Unknown node type "{{node?.type}}"</div>
   </section>
 </div>
+<app-add-node *ngIf="!isLast" [index]="index"></app-add-node>

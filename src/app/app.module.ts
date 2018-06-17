@@ -8,6 +8,7 @@ import { AudioPlayerComponent } from './components/nodes/audio-source/audio-play
 import { NodeGeneralComponent } from './components/nodes/node-general/node-general.component';
 import { AudioSourceComponent } from './components/nodes/audio-source/audio-source.component';
 import { AudioDestinationComponent } from './components/nodes/audio-destination/audio-destination.component';
+import { AddNodeComponent } from './components/nodes/add-node/add-node.component';
 
 @NgModule({
   declarations: [
@@ -15,12 +16,12 @@ import { AudioDestinationComponent } from './components/nodes/audio-destination/
     FileSelectorComponent,
     AudioPlayerComponent,
     NodeGeneralComponent,
+    AddNodeComponent,
     AudioSourceComponent,
+    AudioDestinationComponent,
 
     // --- pipes ---
     FilenamePipe,
-
-    AudioDestinationComponent,
   ],
   imports: [
     BrowserModule

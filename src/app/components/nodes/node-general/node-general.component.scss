@@ -7,23 +7,18 @@
   position: relative;
 
   // a tip arrow in the bottom
-  &:not(.is-last) {
-    margin-bottom: 2rem;
+  &:not(.is-last)::after {
+    content: "";
+    width: 1rem;
+    height: 1rem;
+    border-right: 1px solid $color-light;
+    border-bottom: 1px solid $color-light;
+    background-color: #ffffff;
 
-    &::after {
-      content: "";
-      display: inline-block;
-      width: 1em;
-      height: 1em;
-      border-right: 1px solid $color-light;
-      border-bottom: 1px solid $color-light;
-      background-color: #ffffff;
-
-      position: absolute;
-      left: 50%;
-      bottom: -1px;
-      transform: translate(-50%, 50%) rotate(45deg);
-    }
+    position: absolute;
+    left: 50%;
+    bottom: -1px;
+    transform: translate(-50%, 50%) rotate(45deg);
   }
 
 
@@ -46,6 +41,13 @@
     .remove-button {
       float: right;
       margin: 0;
+
+      button {
+        display: inline-block;
+        margin: -.5rem 0;
+        font-size: .75rem;
+        vertical-align: middle;
+      }
     }
   }
 

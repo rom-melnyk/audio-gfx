@@ -6,12 +6,12 @@
   text-align: center;
 
   &:after {
-    content: "> to system audio device";
+    content: "audio output";
   }
 
   &.is-playing {
     &:after {
-      content: "is playing";
+      content: "<< is playing >>";
     }
   }
 }

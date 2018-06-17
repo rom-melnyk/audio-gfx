@@ -2,6 +2,7 @@
   <app-node-general
       *ngFor="let node of nodes; let i = index;"
       [node]="node" [isLast]="i === nodes.length - 1"
+      [index]="i"
   ></app-node-general>
   <!--<div class="visualization original">
     <canvas></canvas>

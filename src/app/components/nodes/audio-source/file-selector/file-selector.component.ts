@@ -13,7 +13,7 @@ import { AudioFileService } from '../../../../services/audio-file/audio-file.ser
 })
 export class FileSelectorComponent implements OnInit {
   public audioFiles: string[] = [];
-  @Output() audioFile = new EventEmitter<string>();
+  @Output() audioFileSelected = new EventEmitter<string>();
 
   constructor(
     private audioFileService: AudioFileService
@@ -34,6 +34,6 @@ export class FileSelectorComponent implements OnInit {
     } else {
       console.log('No audio file picked');
     }
-    this.audioFile.emit(file);
+    this.audioFileSelected.emit(file);
   }
 }
