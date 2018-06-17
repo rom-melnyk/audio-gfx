@@ -1,10 +1,6 @@
 <div class="main-content">
-  <app-node-general *ngFor="let node of nodes; let i = index" [type]="node.type" [name]="node.name" [isLast]="i === nodes.length - 1"></app-node-general>
-  <div class="player">
-    <app-file-selector (audioFile)="onAudioFile($event)"></app-file-selector>
-    <app-audio-player [audioFile]="audioFile"></app-audio-player>
-  </div>
-  <div class="visualization original">
+  <app-node-general *ngFor="let node of nodes; let i = index" [node]="node" [isLast]="i === nodes.length - 1"></app-node-general>
+  <!--<div class="visualization original">
     <canvas></canvas>
   </div>
   <div class="effect-controls">
@@ -21,5 +17,5 @@
   </div>
   <div class="visualization modified">
     <canvas></canvas>
-  </div>
+  </div>-->
 </div>

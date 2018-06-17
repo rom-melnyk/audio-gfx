@@ -8,14 +8,9 @@ import { NodeManagerService } from '../../services/node-manager/node-manager.ser
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  public audioFile = '';
   public nodes: Node[];
 
   constructor(private nodeManager: NodeManagerService) {}
-
-  onAudioFile(file: string) {
-    this.audioFile = file;
-  }
 
   ngOnInit() {
     this.nodes = this.nodeManager.getNodes();
