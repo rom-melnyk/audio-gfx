@@ -1,0 +1,17 @@
+@import "../../../../styles/constants";
+
+.audio-destination {
+  font-size: 4rem;
+  color: $color-light;
+  text-align: center;
+
+  &:after {
+    content: "> to system audio device";
+  }
+
+  &.is-playing {
+    &:after {
+      content: "is playing";
+    }
+  }
+}

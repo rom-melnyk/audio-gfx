@@ -3,7 +3,7 @@
 
 
 .node {
-  border: 1px solid $color-dark;
+  border: 1px solid $color-light;
   position: relative;
 
   // a tip arrow in the bottom
@@ -15,8 +15,8 @@
       display: inline-block;
       width: 1em;
       height: 1em;
-      border-right: 1px solid $color-dark;
-      border-bottom: 1px solid $color-dark;
+      border-right: 1px solid $color-light;
+      border-bottom: 1px solid $color-light;
       background-color: #ffffff;
 
       position: absolute;
@@ -30,7 +30,7 @@
   header {
     @extend .clear-fix;
     padding: 0.25rem 1rem;
-    background-color: $color-dark;
+    background-color: $color-light;
 
 
     .name {

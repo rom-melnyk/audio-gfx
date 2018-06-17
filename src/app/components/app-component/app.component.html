@@ -1,5 +1,8 @@
 <div class="main-content">
-  <app-node-general *ngFor="let node of nodes; let i = index" [node]="node" [isLast]="i === nodes.length - 1"></app-node-general>
+  <app-node-general
+      *ngFor="let node of nodes; let i = index;"
+      [node]="node" [isLast]="i === nodes.length - 1"
+  ></app-node-general>
   <!--<div class="visualization original">
     <canvas></canvas>
   </div>
