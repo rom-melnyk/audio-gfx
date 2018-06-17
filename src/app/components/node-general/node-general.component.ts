@@ -8,7 +8,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class NodeGeneralComponent implements OnInit {
   @Input() isLast = false;
   @Input() type = '';
-  nodeTitle = 'Audio node';
+  @Input() name = '';
 
   constructor() { }
 

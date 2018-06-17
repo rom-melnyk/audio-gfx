@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { AudioFileService } from '../../services/audio-file-service/audio-file-service.service';
+import { AudioFileService } from '../../services/audio-file/audio-file.service';
 
 @Component({
   selector: 'app-file-selector',
