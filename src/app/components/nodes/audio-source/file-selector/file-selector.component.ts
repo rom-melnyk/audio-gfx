@@ -9,7 +9,9 @@ import { AudioFileService } from '../../../../services/audio-file/audio-file.ser
       <option *ngFor="let file of audioFiles" value="./assets/audio/{{file}}">{{file | filename}}</option>
     </select>
   `,
-  styles: []
+  styles: [
+    'select { margin-bottom: .5em; }'
+  ]
 })
 export class FileSelectorComponent implements OnInit {
   public audioFiles: string[] = [];
