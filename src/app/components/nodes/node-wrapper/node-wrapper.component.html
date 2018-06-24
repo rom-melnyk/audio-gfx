@@ -9,6 +9,7 @@
     <app-audio-source *ngSwitchCase="NodeTypes.AudioSourceNode" [node]="node"></app-audio-source>
     <app-analyser *ngSwitchCase="NodeTypes.AnalyserNode" [node]="node"></app-analyser>
     <app-gain *ngSwitchCase="NodeTypes.GainNode" [node]="node"></app-gain>
+    <app-delay *ngSwitchCase="NodeTypes.DelayNode" [node]="node"></app-delay>
     <app-audio-destination *ngSwitchCase="NodeTypes.AudioDestinationNode" [node]="node"></app-audio-destination>
     <div class="unknown" *ngSwitchDefault>Unknown node type "{{node?.type}}"</div>
   </section>

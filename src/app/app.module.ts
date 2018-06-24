@@ -12,6 +12,7 @@ import { AudioDestinationComponent } from './components/nodes/audio-destination/
 import { AddNodeComponent } from './components/nodes/add-node/add-node.component';
 import { AnalyserComponent } from './components/nodes/analyser/analyser.component';
 import { GainComponent } from './components/nodes/gain/gain.component';
+import { DelayComponent } from './components/nodes/delay/delay.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { GainComponent } from './components/nodes/gain/gain.component';
     AudioSourceComponent,
     AnalyserComponent,
     GainComponent,
+    DelayComponent,
     AudioDestinationComponent,
 
     // --- pipes ---

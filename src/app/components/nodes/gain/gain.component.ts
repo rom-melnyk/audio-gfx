@@ -12,10 +12,9 @@ export class GainComponent implements OnInit {
   @Input() node: Node;
   public gain = 1;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   onGain() {
     (<GainNode>this.node.node).gain.value = this.gain;

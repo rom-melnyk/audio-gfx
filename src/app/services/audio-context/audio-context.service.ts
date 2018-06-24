@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NodeTypes } from '../../constants';
+import { NodeTypes, Defaults } from '../../constants';
 
 const MODULE_NAME = 'AudioContextService';
 
@@ -23,6 +23,7 @@ export class AudioContextService {
       case NodeTypes.AudioSourceNode: return this.context.createMediaElementSource(<HTMLAudioElement>param);
       case NodeTypes.AnalyserNode: return this.context.createAnalyser();
       case NodeTypes.GainNode: return this.context.createGain();
+      case NodeTypes.DelayNode: return this.context.createDelay(Defaults[NodeTypes.DelayNode].MAX_DELAY);
       case NodeTypes.AudioDestinationNode: return this.context.destination;
       default:
     }
