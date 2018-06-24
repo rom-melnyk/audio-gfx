@@ -6,10 +6,22 @@ enum NodeTypes {
   AudioDestinationNode = 'Audio Destination Node',
 }
 
+
+enum AnalyserModes {
+  BARS = 'bars',
+  WAVEFORM = 'waveform',
+}
+
+
 const Defaults = {
+  [NodeTypes.AnalyserNode]: {
+    DEFAULT_MODE: AnalyserModes.BARS,
+    DEFAULT_INTERVAL: 25, // in milliseconds
+  },
   [NodeTypes.DelayNode]: {
     MAX_DELAY: 10, // in seconds
-  }
+  },
 };
 
-export { NodeTypes, Defaults };
+
+export { NodeTypes, AnalyserModes, Defaults };

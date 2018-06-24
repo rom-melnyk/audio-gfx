@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Node } from '../../../models/node-model';
+import { NodeTypes, AnalyserModes, Defaults } from '../../../constants';
 
 @Component({
   selector: 'app-analyser',
@@ -10,7 +11,9 @@ export class AnalyserComponent implements OnInit {
   @Input() node: Node;
 
   public isSetupVisible = false;
-  public type = 'bars'; // or 'waveform'
+  public mode: AnalyserModes = AnalyserModes.BARS;
+  public colorize = false;
+  public interval = Defaults[NodeTypes.AnalyserNode].DEFAULT_INTERVAL;
 
   constructor() { }
 

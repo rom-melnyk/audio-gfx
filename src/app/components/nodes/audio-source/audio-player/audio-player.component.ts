@@ -4,7 +4,7 @@ import { NodeManagerService } from '../../../../services/node-manager/node-manag
 @Component({
   selector: 'app-audio-player',
   template: `
-    <audio controls="controls" src={{audioFile}}>
+    <audio controls="controls" src="{{audioFile}}">
       Your browser does not support the <code>&lt;audio&gt;</code> element.
     </audio>
   `,
