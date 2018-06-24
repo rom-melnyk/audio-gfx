@@ -1,4 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ElementRef } from '@angular/core';
+import { NodeManagerService } from '../../../../services/node-manager/node-manager.service';
 
 @Component({
   selector: 'app-audio-player',
@@ -14,9 +15,15 @@ import { Component, OnInit, Input } from '@angular/core';
 export class AudioPlayerComponent implements OnInit {
   @Input() audioFile = '';
 
-  constructor() { }
+  constructor(
+    private audioElement: ElementRef,
+    private nodeManager: NodeManagerService
+  ) { }
 
   ngOnInit() {
+    // WORKAROUND: <audio> element is created later so we have to initialize AudioSourceNode at this point
+    const audioEl = this.audioElement.nativeElement.querySelector('audio');
+    this.nodeManager.initNodesChain(audioEl);
   }
 
 }
