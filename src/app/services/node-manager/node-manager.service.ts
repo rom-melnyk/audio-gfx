@@ -10,6 +10,7 @@ export class NodeManagerService {
 
   constructor() {
     this.addNodeAt(NodeTypes.AudioSourceNode);
+    this.addNodeAt(NodeTypes.AnalyserNode); // TODO remove me after testing
     this.addNodeAt(NodeTypes.AudioDestinationNode);
   }
 

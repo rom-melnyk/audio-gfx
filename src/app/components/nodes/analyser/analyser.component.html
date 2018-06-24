@@ -1,0 +1,15 @@
+<div class="setup">
+  <h4>
+    Setup &#x2699;
+    <button (click)="onToggleSetup();">{{isSetupVisible ? '&ndash;' : '+'}}</button>
+  </h4>
+  <section *ngIf="isSetupVisible">
+    <div class="field-set" data-name="Type">
+      <input id="type-bars" type="radio" name="type" value="bars" [(ngModel)]="type">
+      <label for="type-bars">bars</label>
+      <input id="type-waveform" type="radio" name="type" value="waveform" [(ngModel)]="type">
+      <label for="type-waveform">waveform</label>
+    </div>
+  </section>
+  <canvas></canvas>
+</div>

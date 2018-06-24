@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './components/app-component/app.component';
 import { FileSelectorComponent } from './components/nodes/audio-source/file-selector/file-selector.component';
@@ -9,6 +10,7 @@ import { NodeWrapperComponent } from './components/nodes/node-wrapper/node-wrapp
 import { AudioSourceComponent } from './components/nodes/audio-source/audio-source.component';
 import { AudioDestinationComponent } from './components/nodes/audio-destination/audio-destination.component';
 import { AddNodeComponent } from './components/nodes/add-node/add-node.component';
+import { AnalyserComponent } from './components/nodes/analyser/analyser.component';
 
 @NgModule({
   declarations: [
@@ -18,13 +20,15 @@ import { AddNodeComponent } from './components/nodes/add-node/add-node.component
     NodeWrapperComponent,
     AddNodeComponent,
     AudioSourceComponent,
+    AnalyserComponent,
     AudioDestinationComponent,
 
     // --- pipes ---
     FilenamePipe,
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [ AppComponent ]
