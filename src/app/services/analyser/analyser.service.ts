@@ -5,26 +5,98 @@ import { NodeTypes, Defaults } from '../../constants';
 import { Node } from '../../models/node-model';
 import { AnalyserModes } from '../../constants';
 
+const MODULE_NAME = 'AnalyserService';
+
+interface IAnalyserProps {
+  mode?: AnalyserModes;
+  interval?: number;
+  fftSize?: number;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AnalyserService {
-  private observable: Observable<Uint8Array> = null;
+  private store: Array<{ node: Node, observable: AnalyserObservable }> = [];
+
+  constructor() {}
+
+  getObservable(node: Node): Observable<Uint8Array> {
+    const index = this.findStoreIndexByNode(node);
+    if (this.store[index]) {
+      return this.store[index].observable.observable;
+    }
+
+    console.error(`[ ${MODULE_NAME}::getObservable() ] no entry found for this node`, node);
+    return null;
+  }
+
+  setup(node: Node, props: IAnalyserProps): Observable<Uint8Array> {
+    const index = this.findStoreIndexByNode(node);
+    if (this.store[index]) {
+      console.error(`[ ${MODULE_NAME}::setup() ] entry already exists for this node`, node);
+      return null;
+    }
+
+    const observable = new AnalyserObservable(node, props);
+    this.store.push({ node, observable });
+    return observable.observable;
+  }
+
+  update(node: Node, props: IAnalyserProps): void {
+    const index = this.findStoreIndexByNode(node);
+    if (this.store[index]) {
+      const { observable } = this.store[index];
+      Object.assign(observable, props);
+    } else {
+      console.error(`[ ${MODULE_NAME}::update() ] no entry found for this node`, node);
+    }
+  }
+
+  tearDown(node: Node, subscriber: Subscriber<any>): void {
+    const index = this.findStoreIndexByNode(node);
+    if (this.store[index]) {
+      const { observable } = this.store[index];
+      observable.tearDown(subscriber);
+      this.store.splice(index, 1);
+    } else {
+      console.error(`[ ${MODULE_NAME}::tearDown() ] no entry found for this node`, node);
+    }
+  }
+
+  private findStoreIndexByNode(node: Node): number {
+    return this.store.findIndex((item) => node === item.node);
+  }
+}
+
+
+class AnalyserObservable implements IAnalyserProps {
   private observer: Observer<any> = null;
-  public interval = Defaults[NodeTypes.AnalyserNode].DEFAULT_INTERVAL;
-  public mode: AnalyserModes = AnalyserModes.BARS;
+  public observable: Observable<Uint8Array> = null;
+  public mode: AnalyserModes;
+  public interval: number;
 
-  constructor() {
+  private _fftSize: number;
+  public set fftSize(x) {
+    this._fftSize = x;
+    (<AnalyserNode>this.node.node).fftSize = this._fftSize;
+  }
+  public get fftSize() {
+    return this._fftSize;
+  }
+
+  constructor(
+    private node: Node,
+    props: IAnalyserProps,
+  ) {
+    this.mode = props.mode;
+    this.interval = props.interval;
+    this.fftSize = props.fftSize;
+
     this.tick = this.tick.bind(this);
-  }
 
-  getObservable() {
-    return this.observable;
-  }
-
-  setup(node: Node) {
     const analyser = <AnalyserNode>node.node;
+
     let previousSum = 1;
 
     this.observable = Observable.create((observer: Observer<any>) => {

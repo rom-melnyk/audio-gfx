@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, OnDestroy, Input, ElementRef, SimpleChanges, SimpleChange } from '@angular/core';
 import { AnalyserService } from '../../../../services/analyser/analyser.service';
 import { Node } from '../../../../models/node-model';
-import { Subscriber } from 'rxjs';
+import { Observable, Subscriber } from 'rxjs';
 import { AnalyserModes } from '../../../../constants';
 
 const DEFAULT_COLOR = 'hsl(210, 10%, 80%)';
@@ -21,6 +21,7 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
   private canvas: HTMLCanvasElement = null;
   private ctx: CanvasRenderingContext2D = null;
   private gapFactor = .1;
+  private observable: Observable<Uint8Array> = null;
   private subscriber: Subscriber<any> = null;
   public width;
   public height;
@@ -29,6 +30,7 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
   @Input() mode: AnalyserModes;
   @Input() colorize: boolean;
   @Input() interval: number;
+  @Input() fftSize: number;
 
   constructor(
     private analyserService: AnalyserService,
@@ -41,9 +43,8 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     this.height = this.canvas.offsetHeight;
     this.ctx = this.canvas.getContext('2d');
 
-    this.analyserService.setup(this.node);
-    this.subscriber = <Subscriber<any>>this.analyserService.getObservable().subscribe((data: Uint8Array) => {
-      console.log('tick');
+    this.observable = this.analyserService.setup(this.node, { mode: this.mode, interval: this.interval, fftSize: this.fftSize });
+    this.subscriber = <Subscriber<any>>this.observable.subscribe((data: Uint8Array) => {
       this.drawBars(data);
     });
   }
@@ -72,18 +73,29 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if (!this.observable) {
+      return;
+    }
+
     const modeChange = (<{ mode: SimpleChange }>changes).mode;
     if (modeChange) {
-      this.analyserService.mode = modeChange.currentValue;
+      this.analyserService.update(this.node, { mode: modeChange.currentValue });
     }
 
     const intervalChange = (<{ interval: SimpleChange }>changes).interval;
     if (intervalChange) {
-      this.analyserService.interval = intervalChange.currentValue;
+      this.analyserService.update(this.node, { interval: intervalChange.currentValue });
+    }
+
+    const fftSizeChange = (<{ fftSize: SimpleChange }>changes).fftSize;
+    if (fftSizeChange) {
+      this.analyserService.update(this.node, { fftSize: fftSizeChange.currentValue });
     }
   }
 
   ngOnDestroy() {
-    this.analyserService.tearDown(this.subscriber);
+    this.analyserService.tearDown(this.node, this.subscriber);
+    this.subscriber = null;
+    this.observable = null;
   }
 }

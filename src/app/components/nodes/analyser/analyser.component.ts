@@ -14,6 +14,11 @@ export class AnalyserComponent implements OnInit {
   public mode: AnalyserModes = AnalyserModes.BARS;
   public colorize = false;
   public interval = Defaults[NodeTypes.AnalyserNode].DEFAULT_INTERVAL;
+  public fftSize = 6;
+
+  public get exportFftSize() {
+    return Math.pow(2, this.fftSize);
+  }
 
   constructor() { }
 
