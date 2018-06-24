@@ -1,6 +1,6 @@
 <div class="add-node">
   <select (change)="onSelect($event)">
     <option value="">Add a node...</option>
-    <option *ngFor="let availableNode of availableNodes" value="{{availableNode.type}}">{{availableNode.name}}</option>
+    <option *ngFor="let availableNode of availableNodes" value="{{availableNode}}">{{availableNode}}</option>
   </select>
 </div>
