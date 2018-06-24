@@ -6,9 +6,10 @@
     </div>
   </header>
   <section [ngSwitch]="node?.type">
-    <app-audio-source *ngSwitchCase="NodeTypes.AudioSourceNode"></app-audio-source>
-    <app-analyser *ngSwitchCase="NodeTypes.AnalyserNode"></app-analyser>
-    <app-audio-destination *ngSwitchCase="NodeTypes.AudioDestinationNode"></app-audio-destination>
+    <app-audio-source *ngSwitchCase="NodeTypes.AudioSourceNode" [node]="node"></app-audio-source>
+    <app-analyser *ngSwitchCase="NodeTypes.AnalyserNode" [node]="node"></app-analyser>
+    <app-gain *ngSwitchCase="NodeTypes.GainNode" [node]="node"></app-gain>
+    <app-audio-destination *ngSwitchCase="NodeTypes.AudioDestinationNode" [node]="node"></app-audio-destination>
     <div class="unknown" *ngSwitchDefault>Unknown node type "{{node?.type}}"</div>
   </section>
 </div>

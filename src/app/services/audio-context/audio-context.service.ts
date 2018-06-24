@@ -22,6 +22,7 @@ export class AudioContextService {
     switch (type) {
       case NodeTypes.AudioSourceNode: return this.context.createMediaElementSource(<HTMLAudioElement>param);
       case NodeTypes.AnalyserNode: return this.context.createAnalyser();
+      case NodeTypes.GainNode: return this.context.createGain();
       case NodeTypes.AudioDestinationNode: return this.context.destination;
       default:
     }
