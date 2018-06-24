@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { Node } from '../../../models/node-model';
 
 @Component({
   selector: 'app-analyser',
@@ -6,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./analyser.component.scss']
 })
 export class AnalyserComponent implements OnInit {
+  @Input() node: Node;
+
   public isSetupVisible = false;
   public type = 'bars'; // or 'waveform'
 

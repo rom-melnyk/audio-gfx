@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { Node } from '../../../models/node-model';
 
 @Component({
   selector: 'app-audio-source',
@@ -10,6 +11,7 @@ import { Component, OnInit } from '@angular/core';
   `,
 })
 export class AudioSourceComponent implements OnInit {
+  @Input() node: Node;
   public audioFile = '';
 
   constructor() { }
