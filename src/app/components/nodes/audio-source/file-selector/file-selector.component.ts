@@ -4,7 +4,7 @@ import { AudioFileService } from '../../../../services/audio-file/audio-file.ser
 @Component({
   selector: 'app-file-selector',
   template: `
-    <select class="track-picker" (change)="onFileSelected($event)">
+    <select class="track-picker" (change)="onFileSelected($event);">
       <option value="" selected="selected">Pick an audio track</option>
       <option *ngFor="let file of audioFiles" value="./assets/audio/{{file}}">{{file | filename}}</option>
     </select>
