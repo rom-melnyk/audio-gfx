@@ -4,11 +4,11 @@ import { Node } from '../../../models/node-model';
 import { NodeManagerService } from '../../../services/node-manager/node-manager.service';
 
 @Component({
-  selector: 'app-node-general',
-  templateUrl: './node-general.component.html',
-  styleUrls: ['./node-general.component.scss']
+  selector: 'app-node-wrapper',
+  templateUrl: './node-wrapper.component.html',
+  styleUrls: ['./node-wrapper.component.scss']
 })
-export class NodeGeneralComponent implements OnInit {
+export class NodeWrapperComponent implements OnInit {
   @Input() node: Node;
   @Input() index: number;
   @Input() isLast = false;

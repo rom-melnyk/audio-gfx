@@ -1,8 +1,8 @@
-<div class="node" [class.is-last]="isLast">
+<div class="node-wrapper" [class.is-last]="isLast">
   <header>
     <h4 class="name">{{node?.name}}</h4>
     <div class="remove-button" *ngIf="node?.isRemovable">
-      <button (click)="onRemoveNode()">X</button>
+      <button (click)="onRemoveNode()">&#x2715;</button>
     </div>
   </header>
   <section [ngSwitch]="node?.type">

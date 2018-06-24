@@ -23,7 +23,7 @@ export class AddNodeComponent implements OnInit {
     this.availableNodes = <AvailableNode[]>Object.keys(NodeTypes)
       .sort()
       .map((type: NodeTypes) => new AvailableNode(type))
-      .filter(({ name }) => name !== NodeTypes.AudioSourceNode && name !== NodeTypes.AudioDestinationNode);
+      .filter(({ name }) => (name !== NodeTypes.AudioSourceNode && name !== NodeTypes.AudioDestinationNode));
   }
 
   onSelect(e: Event) {
