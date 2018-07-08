@@ -5,7 +5,7 @@ import { Component, OnInit, Input } from '@angular/core';
   template: `
     <div class="form">
       <ng-container *ngFor="let field of fields">
-        <ng-container *ngSwitch="field.config?.type">
+        <ng-container [ngSwitch]="field.config?.type">
           <app-input-number *ngSwitchCase="'number'" [config]="field.config" [onChange]="field.onChange"></app-input-number>
           <div class="error" *ngSwitchDefault="">Incorrect field config type "{{config?.type}}"</div>
         </ng-container>

@@ -1,4 +1,5 @@
 @import "./common";
+@import "./constants";
 
 
 .field-set {
@@ -21,6 +22,11 @@
 
 .form-section {
   @extend .clear-fix;
+  margin-bottom: .5rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 
   .label {
     float: left;
@@ -30,6 +36,18 @@
   .input-wrapper {
     float: right;
     width: 80%;
+  }
+
+  .error-message {
+    display: none;
+    font-size: .75rem;
+  }
+
+  &.invalid {
+    color: $color-error;
+    .error-message {
+      display: block;
+    }
   }
 }
 

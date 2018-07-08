@@ -1,3 +1,5 @@
 $color-light: hsl(210, 10%, 80%);
 $color-dark: hsl(210, 10%, 30%);
 $color-darker: hsl(210, 10%, 20%);
+
+$color-error: adjust_color($color-dark, $hue: 140, $saturation: 90%, $lightness: 20%);
