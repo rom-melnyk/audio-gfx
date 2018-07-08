@@ -14,20 +14,29 @@ import { AnalyserComponent } from './components/nodes/analyser/analyser.componen
 import { GainComponent } from './components/nodes/gain/gain.component';
 import { DelayComponent } from './components/nodes/delay/delay.component';
 import { CanvasComponent } from './components/nodes/analyser/canvas/canvas.component';
+import { InputNumberComponent } from './components/form-elements/input-number/input-number.component';
+import { FormComponent } from './components/form-elements/form/form.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    FileSelectorComponent,
-    AudioPlayerComponent,
+
+    // --- nodes ---
     NodeWrapperComponent,
-    AddNodeComponent,
     AudioSourceComponent,
+    /* + */ FileSelectorComponent,
+    /* + */ AudioPlayerComponent,
     AnalyserComponent,
     CanvasComponent,
     GainComponent,
     DelayComponent,
     AudioDestinationComponent,
+
+    AddNodeComponent,
+
+    // --- form ---
+    FormComponent,
+    InputNumberComponent,
 
     // --- pipes ---
     FilenamePipe,

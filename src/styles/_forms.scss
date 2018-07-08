@@ -1,3 +1,6 @@
+@import "./common";
+
+
 .field-set {
   position: relative;
   padding-left: 30%;
@@ -12,6 +15,21 @@
 
   &:last-child {
     margin-bottom: 0;
+  }
+}
+
+
+.form-section {
+  @extend .clear-fix;
+
+  .label {
+    float: left;
+    width: 20%;
+  }
+
+  .input-wrapper {
+    float: right;
+    width: 80%;
   }
 }
 

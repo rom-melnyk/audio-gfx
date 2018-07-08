@@ -119,8 +119,7 @@ class AnalyserObservable implements IAnalyserProps {
         return previousSum !== 0 || sum !== 0;
       }),
       tap((data: [ Uint8Array, number ]) => {
-        const sum = data[1];
-        previousSum = sum;
+        previousSum = data[1];
       }),
       map((data: [ Uint8Array, number ]) => data[0])
     );
