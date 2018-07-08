@@ -16,6 +16,8 @@ import { DelayComponent } from './components/nodes/delay/delay.component';
 import { CanvasComponent } from './components/nodes/analyser/canvas/canvas.component';
 import { InputNumberComponent } from './components/form-elements/input-number/input-number.component';
 import { FormComponent } from './components/form-elements/form/form.component';
+import { InputBooleanComponent } from './components/form-elements/input-boolean/input-boolean.component';
+import { InputRadioComponent } from './components/form-elements/input-radio/input-radio.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,8 @@ import { FormComponent } from './components/form-elements/form/form.component';
     // --- form ---
     FormComponent,
     InputNumberComponent,
+    InputBooleanComponent,
+    InputRadioComponent,
 
     // --- pipes ---
     FilenamePipe,

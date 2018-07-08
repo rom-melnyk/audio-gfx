@@ -24,10 +24,6 @@
   @extend .clear-fix;
   margin-bottom: .5rem;
 
-  &:last-child {
-    margin-bottom: 0;
-  }
-
   .label {
     float: left;
     width: 20%;
@@ -41,6 +37,10 @@
   .error-message {
     display: none;
     font-size: .75rem;
+  }
+
+  &.is-last {
+    margin-bottom: 0;
   }
 
   &.invalid {

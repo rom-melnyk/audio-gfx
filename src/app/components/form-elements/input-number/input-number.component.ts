@@ -1,29 +1,29 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { INumberInput } from '../form-config';
+import { InputAbstract } from '../input-abstract';
+import { INumberInput } from '../input-interfaces';
 
 @Component({
   selector: 'app-input-number',
   template: `
-    <div class="form-section" [class.invalid]="!validate()">
-      <div class="label">{{label}}</div>
+    <div class="form-section" [class.invalid]="!validate(value)" [class.is-last]="isLast">
+      <div class="label" [innerHTML]="label"></div>
       <div class="input-wrapper">
         <input type="range" min="{{min}}" max="{{max}}" step="{{step}}" (change)="onChange(value)" [(ngModel)]="value">
-        <div class="error-message">{{errorMessage}}</div>
+        <div class="error-message" [innerHTML]="errorMessage"></div>
       </div>
     </div>
   `
 })
-export class InputNumberComponent implements OnInit {
+export class InputNumberComponent extends InputAbstract implements OnInit {
   @Input() config: INumberInput;
-  @Input() onChange: (value: any) => void;
   public min: number;
   public max: number;
   public step: number;
   public value: number;
-  public label = 'Number';
-  public errorMessage = 'Incorrect value';
 
-  constructor() { }
+  constructor() {
+    super();
+  }
 
   ngOnInit() {
     const [min, max, step = 1] = <number[]>this.config.limits;
@@ -31,27 +31,13 @@ export class InputNumberComponent implements OnInit {
     this.max = Math.max(min, max);
     this.step = step;
 
-    const { label, default: def, errorMessage, validate } = this.config;
-    if (typeof def !== 'undefined') {
-      this.value = def;
+    if (typeof this.config.default !== 'undefined') {
+      this.value = this.config.default;
     } else {
       const steps = (max - min) / step;
       this.value = min + Math.round( steps / 2) * step;
     }
-    if (typeof label !== 'undefined') {
-      this.label = label;
-    }
-    if (typeof errorMessage !== 'undefined') {
-      this.errorMessage = errorMessage;
-    }
-    if (typeof validate !== 'undefined') {
-      this.validate = validate;
-    }
 
-    this.onChange(this.value);
-  }
-
-  public validate(): boolean {
-    return true;
+    super.ngOnInit();
   }
 }

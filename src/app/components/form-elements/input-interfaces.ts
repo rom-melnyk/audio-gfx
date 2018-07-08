@@ -6,7 +6,8 @@ interface IInput {
   label: string;
   default?: number | string | boolean;
   errorMessage?: string;
-  validate?: () => boolean;
+  validate?: (value: number | string | boolean, param?: any) => boolean;
+  onChange?: (value: number | string | boolean) => void;
 }
 
 
@@ -32,7 +33,7 @@ interface IBooleanInput extends IInput {
 interface IRadioInput extends IInput {
   type: 'radio';
   default?: string;
-  values: string[];
+  options: string[] | { name: string, value: string }[];
 }
 
 

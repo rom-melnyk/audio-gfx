@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Node } from '../../../models/node-model';
-import { IInput, INumberInput } from '../../form-elements/form-config';
+import { IBooleanInput, IInput, INumberInput, IRadioInput } from '../../form-elements/input-interfaces';
 
 @Component({
   selector: 'app-audio-source',
@@ -16,14 +16,21 @@ export class AudioSourceComponent implements OnInit {
   @Input() node: Node;
   public audioFile = '';
   // TODO remove me after experiments
-  public fields: { config: IInput, onChange: Function }[] = [
-    {
-      config: <INumberInput>{
-        type: 'number',
-        limits: [ 0, 100, 20 ],
-        label: 'Your value?'
-      },
-      onChange: <Function>console.log
+  public fields: IInput[] = [
+    <INumberInput>{
+      type: 'number',
+      limits: [ 0, 100, 20 ],
+      label: 'Your <sub>value?</sub>',
+      onChange: (x) => console.log(`>>> number ${x}`)
+    },
+    <IBooleanInput>{
+      type: 'boolean',
+      onChange: (x) => console.log(`>>> boolean ${x}`),
+    },
+    <IRadioInput>{
+      type: 'radio',
+      options: ['asd', 'asdasd', 'wqet qwet', {name: '333', value: -1}],
+      onChange: (x) => console.log(`>>> radio ${x}`),
     }
   ];
 
