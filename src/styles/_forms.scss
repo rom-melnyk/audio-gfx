@@ -85,11 +85,11 @@ input[type=range] {
   }
   &:before {
     content: attr(min);
-    left: -2em;
+    left: -5%;
   }
   &:after {
     content: attr(max);
-    right: -2em;
+    right: -5%;
     text-align: right;
   }
 }
