@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, Observer, Subscriber } from 'rxjs';
 import { map, filter, tap } from 'rxjs/operators';
 import { NodeTypes, Defaults } from '../../constants';
-import { Node } from '../../models/node-model';
+import { AnalyserNodeComplex } from '../../models/analyser-node-complex';
 import { AnalyserModes } from '../../constants';
 
 const MODULE_NAME = 'AnalyserService';
@@ -17,11 +17,11 @@ interface IAnalyserProps {
   providedIn: 'root'
 })
 export class AnalyserService {
-  private store: Array<{ node: Node, observable: AnalyserObservable }> = [];
+  private store: Array<{ node: AnalyserNodeComplex, observable: AnalyserObservable }> = [];
 
   constructor() {}
 
-  getObservable(node: Node): Observable<Uint8Array> {
+  getObservable(node: AnalyserNodeComplex): Observable<Uint8Array> {
     const index = this.findStoreIndexByNode(node);
     if (this.store[index]) {
       return this.store[index].observable.observable;
@@ -31,7 +31,7 @@ export class AnalyserService {
     return null;
   }
 
-  setup(node: Node, props: IAnalyserProps): Observable<Uint8Array> {
+  setup(node: AnalyserNodeComplex, props: IAnalyserProps): Observable<Uint8Array> {
     const index = this.findStoreIndexByNode(node);
     if (this.store[index]) {
       console.error(`[ ${MODULE_NAME}::setup() ] entry already exists for this node`, node);
@@ -43,7 +43,7 @@ export class AnalyserService {
     return observable.observable;
   }
 
-  update(node: Node, props: IAnalyserProps): void {
+  update(node: AnalyserNodeComplex, props: IAnalyserProps): void {
     const index = this.findStoreIndexByNode(node);
     if (this.store[index]) {
       const { observable } = this.store[index];
@@ -53,7 +53,7 @@ export class AnalyserService {
     }
   }
 
-  tearDown(node: Node, subscriber: Subscriber<any>): void {
+  tearDown(node: AnalyserNodeComplex, subscriber: Subscriber<any>): void {
     const index = this.findStoreIndexByNode(node);
     if (this.store[index]) {
       const { observable } = this.store[index];
@@ -64,7 +64,7 @@ export class AnalyserService {
     }
   }
 
-  private findStoreIndexByNode(node: Node): number {
+  private findStoreIndexByNode(node: AnalyserNodeComplex): number {
     return this.store.findIndex((item) => node === item.node);
   }
 }
@@ -86,7 +86,7 @@ class AnalyserObservable implements IAnalyserProps {
   }
 
   constructor(
-    private node: Node,
+    private node: AnalyserNodeComplex,
     props: IAnalyserProps,
   ) {
     this.mode = props.mode;

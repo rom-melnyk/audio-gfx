@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Node } from '../../models/node-model';
+import { AbstractNodeComplex } from '../../models/abstract-node-complex';
 import { NodeManagerService } from '../../services/node-manager/node-manager.service';
 
 @Component({
@@ -8,7 +8,7 @@ import { NodeManagerService } from '../../services/node-manager/node-manager.ser
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  public nodes: Node[];
+  public nodes: AbstractNodeComplex[];
 
   constructor(private nodeManager: NodeManagerService) {}
 

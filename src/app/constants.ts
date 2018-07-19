@@ -18,9 +18,6 @@ const Defaults = {
     DEFAULT_MODE: AnalyserModes.BARS,
     DEFAULT_INTERVAL: 25, // in milliseconds
   },
-  [NodeTypes.DelayNode]: {
-    MAX_DELAY: 10, // in seconds
-  },
 };
 
 

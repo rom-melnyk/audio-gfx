@@ -1,22 +1,17 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Node } from '../../../models/node-model';
+import { GainNodeComplex } from '../../../models/gain-node-complex';
 
 @Component({
   selector: 'app-gain',
   template: `
-    <input type="range" min="0" max="1" step=".01" [(ngModel)]="gain" (change)="onGain()">
+    <app-form [fields]="node.config"></app-form>
   `,
   styles: []
 })
 export class GainComponent implements OnInit {
-  @Input() node: Node;
-  public gain = 1;
+  @Input() node: GainNodeComplex;
 
   constructor() {}
 
   ngOnInit() {}
-
-  onGain() {
-    (<GainNode>this.node.node).gain.value = this.gain;
-  }
 }

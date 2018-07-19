@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Node } from '../../models/node-model';
 import { NodeTypes } from '../../constants';
 import { AudioContextService } from '../audio-context/audio-context.service';
+import { AbstractNodeComplex } from '../../models/abstract-node-complex';
+import { AudioSourceNodeComplex } from '../../models/audio-source-node-complex';
+import { AnalyserNodeComplex } from '../../models/analyser-node-complex';
+import { DelayNodeComplex } from '../../models/delay-node-complex';
+import { GainNodeComplex } from '../../models/gain-node-complex';
+import { AudioDestinationNodeComplex } from '../../models/audio-destination-node-complex';
 
 const MODULE_NAME = 'NodeManagerService';
 
@@ -9,23 +14,26 @@ const MODULE_NAME = 'NodeManagerService';
   providedIn: 'root'
 })
 export class NodeManagerService {
-  private nodes: Node[] = [];
+  private nodes: AbstractNodeComplex[] = [];
 
   constructor(
     private audioContext: AudioContextService
   ) {
-    const audioDestinationNode = this.audioContext.createNode(NodeTypes.AudioDestinationNode);
     this.nodes.push(
-      new Node(NodeTypes.AudioSourceNode),
-      new Node(NodeTypes.AudioDestinationNode, audioDestinationNode),
+      new AbstractNodeComplex(NodeTypes.AudioSourceNode, null), // dummy one; will be updated during init phase
+      this.createNodeComplex(NodeTypes.AudioDestinationNode),
     );
   }
 
   initNodesChain(audioElement: HTMLAudioElement) {
+    if (this.nodes[0].node) { // already initialized?
+      return;
+    }
+
     // WORKAROUND: since <audio> element is created _after_ AudioSourceNode was created,
     // we have to update the AudioSourceNode afterwards.
     // After it's done we can proceed with nodes chain.
-    this.nodes[0].node = this.audioContext.createNode(NodeTypes.AudioSourceNode, audioElement);
+    this.nodes[0] = this.createNodeComplex(NodeTypes.AudioSourceNode, audioElement);
     this.nodes.forEach((node, i, nodes): void => {
       if (i === this.nodes.length - 1) {
         return;
@@ -42,8 +50,7 @@ export class NodeManagerService {
 
     const previousNode = this.nodes[position - 1];
     const nextNode = this.nodes[position];
-    const audioNode = this.audioContext.createNode(type);
-    const newNode: Node = new Node(type, audioNode);
+    const newNode = this.createNodeComplex(type);
 
     previousNode.node.disconnect(nextNode.node);
     previousNode.node.connect(newNode.node);
@@ -74,7 +81,32 @@ export class NodeManagerService {
   }
 
 
-  getNodes(): Node[] {
+  getNodes(): AbstractNodeComplex[] {
     return this.nodes;
   }
+
+
+  private createNodeComplex(type: NodeTypes, param: any = null): AbstractNodeComplex {
+    const audioContext = this.audioContext.getContext();
+    switch (type) {
+      case NodeTypes.AudioSourceNode:
+        const audioSourceNode = audioContext.createMediaElementSource(<HTMLAudioElement>param);
+        return new AudioSourceNodeComplex(audioSourceNode);
+      case NodeTypes.AnalyserNode:
+        const analyserNode = audioContext.createAnalyser();
+        return new AnalyserNodeComplex(analyserNode);
+      case NodeTypes.GainNode:
+        const gainNode = audioContext.createGain();
+        return new GainNodeComplex(gainNode);
+      case NodeTypes.DelayNode:
+        const delayNode = audioContext.createDelay(DelayNodeComplex.MAX_DELAY);
+        return new DelayNodeComplex(delayNode);
+      case NodeTypes.AudioDestinationNode:
+        return new AudioDestinationNodeComplex(audioContext.destination);
+      default:
+    }
+    console.error(`[ ${MODULE_NAME}::createNode() ] Bad node type "${type}"`);
+    return null;
+  }
+
 }

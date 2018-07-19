@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { NodeTypes } from '../../../constants';
-import { Node } from '../../../models/node-model';
+import { AbstractNodeComplex } from '../../../models/abstract-node-complex';
 import { NodeManagerService } from '../../../services/node-manager/node-manager.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { NodeManagerService } from '../../../services/node-manager/node-manager.
   styleUrls: ['./node-wrapper.component.scss']
 })
 export class NodeWrapperComponent implements OnInit {
-  @Input() node: Node;
+  @Input() node: AbstractNodeComplex;
   @Input() index: number;
   @Input() isLast = false;
   public NodeTypes = NodeTypes;

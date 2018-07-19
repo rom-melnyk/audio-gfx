@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, OnDestroy, Input, ElementRef, SimpleChanges, SimpleChange } from '@angular/core';
 import { AnalyserService } from '../../../../services/analyser/analyser.service';
-import { Node } from '../../../../models/node-model';
+import { AnalyserNodeComplex } from '../../../../models/analyser-node-complex';
 import { Observable, Subscriber } from 'rxjs';
 import { AnalyserModes } from '../../../../constants';
 
@@ -26,7 +26,7 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
   public width;
   public height;
 
-  @Input() node: Node = null;
+  @Input() node: AnalyserNodeComplex = null;
   @Input() mode: AnalyserModes;
   @Input() colorize: boolean;
   @Input() interval: number;

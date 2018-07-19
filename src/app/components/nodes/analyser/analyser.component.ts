@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Node } from '../../../models/node-model';
+import { AnalyserNodeComplex } from '../../../models/analyser-node-complex';
 import { NodeTypes, AnalyserModes, Defaults } from '../../../constants';
 
 @Component({
@@ -8,7 +8,7 @@ import { NodeTypes, AnalyserModes, Defaults } from '../../../constants';
   styleUrls: ['./analyser.component.scss']
 })
 export class AnalyserComponent implements OnInit {
-  @Input() node: Node;
+  @Input() node: AnalyserNodeComplex;
 
   public isSetupVisible = false;
   public mode: AnalyserModes = AnalyserModes.BARS;

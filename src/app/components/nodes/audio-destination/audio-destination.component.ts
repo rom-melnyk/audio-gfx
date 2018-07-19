@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Node } from '../../../models/node-model';
+import { AudioDestinationNodeComplex } from '../../../models/audio-destination-node-complex';
 
 @Component({
   selector: 'app-audio-destination',
@@ -10,7 +10,7 @@ import { Node } from '../../../models/node-model';
 })
 export class AudioDestinationComponent implements OnInit {
   @Input() isPlaying = false;
-  @Input() node: Node;
+  @Input() node: AudioDestinationNodeComplex;
 
   constructor() { }
 

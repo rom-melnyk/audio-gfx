@@ -7,7 +7,7 @@ const MODULE_NAME = 'AudioContextService';
   providedIn: 'root'
 })
 export class AudioContextService {
-  private context: AudioContext;
+  private readonly context: AudioContext;
 
   constructor() {
     const AudioContext = (<any>window).AudioContext || (<any>window).webkitAudioContext;
@@ -18,16 +18,7 @@ export class AudioContextService {
     }
   }
 
-  createNode(type: NodeTypes, param: any = null) {
-    switch (type) {
-      case NodeTypes.AudioSourceNode: return this.context.createMediaElementSource(<HTMLAudioElement>param);
-      case NodeTypes.AnalyserNode: return this.context.createAnalyser();
-      case NodeTypes.GainNode: return this.context.createGain();
-      case NodeTypes.DelayNode: return this.context.createDelay(Defaults[NodeTypes.DelayNode].MAX_DELAY);
-      case NodeTypes.AudioDestinationNode: return this.context.destination;
-      default:
-    }
-    console.error(`[ ${MODULE_NAME}::createNode() ] Bad node type "${type}"`);
-    return null;
+  getContext() {
+    return this.context;
   }
 }
