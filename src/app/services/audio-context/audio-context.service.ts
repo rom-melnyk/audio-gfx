@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { NodeTypes, Defaults } from '../../constants';
 
 const MODULE_NAME = 'AudioContextService';
 

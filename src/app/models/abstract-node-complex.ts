@@ -1,5 +1,12 @@
-import { NodeTypes } from '../constants';
 import { IInput } from '../components/form-elements/input-interfaces';
+
+enum NodeTypes {
+  AudioSourceNode = 'Audio Source Node',
+  AnalyserNode = 'Analyser Node',
+  GainNode = 'Gain Node',
+  DelayNode = 'Delay Node',
+  AudioDestinationNode = 'Audio Destination Node',
+}
 
 class AbstractNodeComplex {
   public isRemovable = true;
@@ -18,4 +25,4 @@ class AbstractNodeComplex {
   }
 }
 
-export { AbstractNodeComplex };
+export { AbstractNodeComplex, NodeTypes };

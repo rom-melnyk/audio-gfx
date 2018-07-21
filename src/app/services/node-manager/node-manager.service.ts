@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { NodeTypes } from '../../constants';
 import { AudioContextService } from '../audio-context/audio-context.service';
-import { AbstractNodeComplex } from '../../models/abstract-node-complex';
+import { AbstractNodeComplex, NodeTypes } from '../../models/abstract-node-complex';
 import { AudioSourceNodeComplex } from '../../models/audio-source-node-complex';
 import { AnalyserNodeComplex } from '../../models/analyser-node-complex';
 import { DelayNodeComplex } from '../../models/delay-node-complex';

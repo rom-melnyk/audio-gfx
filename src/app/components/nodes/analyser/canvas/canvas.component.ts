@@ -1,8 +1,7 @@
 import { Component, OnInit, OnChanges, OnDestroy, Input, ElementRef, SimpleChanges, SimpleChange } from '@angular/core';
 import { AnalyserService } from '../../../../services/analyser/analyser.service';
-import { AnalyserNodeComplex } from '../../../../models/analyser-node-complex';
+import { AnalyserNodeComplex, AnalyserModes } from '../../../../models/analyser-node-complex';
 import { Observable, Subscriber } from 'rxjs';
-import { AnalyserModes } from '../../../../constants';
 
 const DEFAULT_COLOR = 'hsl(210, 10%, 80%)';
 

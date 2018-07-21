@@ -1,5 +1,4 @@
-import { NodeTypes } from '../constants';
-import { AbstractNodeComplex } from './abstract-node-complex';
+import { AbstractNodeComplex, NodeTypes } from './abstract-node-complex';
 
 class AudioDestinationNodeComplex extends AbstractNodeComplex {
   constructor(

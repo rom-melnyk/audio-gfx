@@ -1,6 +1,3 @@
-import { NodeTypes } from '../../constants';
-
-
 interface IInput {
   type: 'number' | 'string' | 'boolean' | 'radio';
   label: string;
@@ -36,12 +33,6 @@ interface IRadioInput extends IInput {
   options: string[] | { name: string, value: string }[];
 }
 
-
-// const Config = {
-//   [NodeTypes.AnalyserNode]: {},
-//   [NodeTypes.DelayNode]: {},
-//   [NodeTypes.GainNode]: {},
-// };
 
 export {
   IInput, INumberInput, IBooleanInput, IRadioInput, IStringInput

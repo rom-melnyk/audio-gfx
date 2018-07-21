@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { AnalyserNodeComplex } from '../../../models/analyser-node-complex';
-import { NodeTypes, AnalyserModes, Defaults } from '../../../constants';
+import { AnalyserNodeComplex, AnalyserModes } from '../../../models/analyser-node-complex';
 
 @Component({
   selector: 'app-analyser',
@@ -13,7 +12,7 @@ export class AnalyserComponent implements OnInit {
   public isSetupVisible = false;
   public mode: AnalyserModes = AnalyserModes.BARS;
   public colorize = false;
-  public interval = Defaults[NodeTypes.AnalyserNode].DEFAULT_INTERVAL;
+  public interval = AnalyserNodeComplex.DEFAULT_INTERVAL;
   public fftSize = 6;
 
   public get exportFftSize() {

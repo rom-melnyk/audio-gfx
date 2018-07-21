@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { NodeTypes } from '../../../constants';
+import { NodeTypes } from '../../../models/abstract-node-complex';
 import { NodeManagerService } from '../../../services/node-manager/node-manager.service';
 
 @Component({

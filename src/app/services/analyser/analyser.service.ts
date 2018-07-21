@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Observer, Subscriber } from 'rxjs';
 import { map, filter, tap } from 'rxjs/operators';
-import { NodeTypes, Defaults } from '../../constants';
-import { AnalyserNodeComplex } from '../../models/analyser-node-complex';
-import { AnalyserModes } from '../../constants';
+import { AnalyserNodeComplex, AnalyserModes } from '../../models/analyser-node-complex';
 
 const MODULE_NAME = 'AnalyserService';
 
