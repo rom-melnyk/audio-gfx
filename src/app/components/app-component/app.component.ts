@@ -4,15 +4,24 @@ import { NodeManagerService } from '../../services/node-manager/node-manager.ser
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
+  template: `
+    <div class="main-content">
+      <app-node-wrapper
+          *ngFor="let nodeComplex of nodeComplexes; let i = index;"
+          [nodeComplex]="nodeComplex"
+          [isLast]="i === nodeComplexes.length - 1"
+          [index]="i"
+      ></app-node-wrapper>
+    </div>
+  `,
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  public nodes: AbstractNodeComplex[];
+  public nodeComplexes: AbstractNodeComplex[];
 
   constructor(private nodeManager: NodeManagerService) {}
 
   ngOnInit() {
-    this.nodes = this.nodeManager.getNodes();
+    this.nodeComplexes = this.nodeManager.getNodeComplexes();
   }
 }

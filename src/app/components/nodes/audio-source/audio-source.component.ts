@@ -11,7 +11,7 @@ import { AudioSourceNodeComplex } from '../../../models/audio-source-node-comple
   `,
 })
 export class AudioSourceComponent implements OnInit {
-  @Input() node: AudioSourceNodeComplex;
+  @Input() nodeComplex: AudioSourceNodeComplex;
   public audioFile = '';
 
   constructor() { }

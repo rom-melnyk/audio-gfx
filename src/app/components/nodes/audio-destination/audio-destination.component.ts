@@ -10,7 +10,7 @@ import { AudioDestinationNodeComplex } from '../../../models/audio-destination-n
 })
 export class AudioDestinationComponent implements OnInit {
   @Input() isPlaying = false;
-  @Input() node: AudioDestinationNodeComplex;
+  @Input() nodeComplex: AudioDestinationNodeComplex;
 
   constructor() { }
 

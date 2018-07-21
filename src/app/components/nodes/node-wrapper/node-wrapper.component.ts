@@ -8,7 +8,7 @@ import { NodeManagerService } from '../../../services/node-manager/node-manager.
   styleUrls: ['./node-wrapper.component.scss']
 })
 export class NodeWrapperComponent implements OnInit {
-  @Input() node: AbstractNodeComplex;
+  @Input() nodeComplex: AbstractNodeComplex;
   @Input() index: number;
   @Input() isLast = false;
   public NodeTypes = NodeTypes;
@@ -16,7 +16,7 @@ export class NodeWrapperComponent implements OnInit {
   constructor(private nodeManager: NodeManagerService) { }
 
   onRemoveNode() {
-    if (window.confirm(`Sure to remove "${this.node.name}"?`)) {
+    if (window.confirm(`Sure to remove "${this.nodeComplex.name}"?`)) {
       this.nodeManager.removeNodeAt(this.index);
     }
   }

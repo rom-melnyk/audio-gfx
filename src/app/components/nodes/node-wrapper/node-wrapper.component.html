@@ -1,17 +1,17 @@
 <div class="node-wrapper" [class.is-last]="isLast">
   <header>
-    <h4 class="name">{{node?.name}}</h4>
-    <div class="remove-button" *ngIf="node?.isRemovable">
+    <h4 class="name">{{nodeComplex?.name}}</h4>
+    <div class="remove-button" *ngIf="nodeComplex?.isRemovable">
       <button (click)="onRemoveNode();">&#x2715;</button>
     </div>
   </header>
-  <section [ngSwitch]="node?.type">
-    <app-audio-source *ngSwitchCase="NodeTypes.AudioSourceNode" [node]="node"></app-audio-source>
-    <app-analyser *ngSwitchCase="NodeTypes.AnalyserNode" [node]="node"></app-analyser>
-    <app-gain *ngSwitchCase="NodeTypes.GainNode" [node]="node"></app-gain>
-    <app-delay *ngSwitchCase="NodeTypes.DelayNode" [node]="node"></app-delay>
-    <app-audio-destination *ngSwitchCase="NodeTypes.AudioDestinationNode" [node]="node"></app-audio-destination>
-    <div class="unknown" *ngSwitchDefault>Unknown node type "{{node?.type}}"</div>
+  <section [ngSwitch]="nodeComplex?.type">
+    <app-audio-source *ngSwitchCase="NodeTypes.AudioSourceNode" [nodeComplex]="nodeComplex"></app-audio-source>
+    <app-analyser *ngSwitchCase="NodeTypes.AnalyserNode" [nodeComplex]="nodeComplex"></app-analyser>
+    <app-gain *ngSwitchCase="NodeTypes.GainNode" [nodeComplex]="nodeComplex"></app-gain>
+    <app-delay *ngSwitchCase="NodeTypes.DelayNode" [nodeComplex]="nodeComplex"></app-delay>
+    <app-audio-destination *ngSwitchCase="NodeTypes.AudioDestinationNode" [nodeComplex]="nodeComplex"></app-audio-destination>
+    <div class="unknown" *ngSwitchDefault>Unknown node type "{{nodeComplex?.type}}"</div>
   </section>
 </div>
 <app-add-node *ngIf="!isLast" [index]="index"></app-add-node>

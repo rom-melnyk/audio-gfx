@@ -7,13 +7,15 @@ import { AnalyserNodeComplex, AnalyserModes } from '../../../models/analyser-nod
   styleUrls: ['./analyser.component.scss']
 })
 export class AnalyserComponent implements OnInit {
-  @Input() node: AnalyserNodeComplex;
+  @Input() nodeComplex: AnalyserNodeComplex;
 
   public isSetupVisible = false;
+  // --- TODO remove this in honor of nodeComplex.config ---
   public mode: AnalyserModes = AnalyserModes.BARS;
   public colorize = false;
   public interval = AnalyserNodeComplex.DEFAULT_INTERVAL;
   public fftSize = 6;
+  // -------------------------------------------------------
 
   public get exportFftSize() {
     return Math.pow(2, this.fftSize);

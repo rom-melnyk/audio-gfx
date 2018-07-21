@@ -25,7 +25,7 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
   public width;
   public height;
 
-  @Input() node: AnalyserNodeComplex = null;
+  @Input() nodeComplex: AnalyserNodeComplex = null;
   @Input() mode: AnalyserModes;
   @Input() colorize: boolean;
   @Input() interval: number;
@@ -42,7 +42,7 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     this.height = this.canvas.offsetHeight;
     this.ctx = this.canvas.getContext('2d');
 
-    this.observable = this.analyserService.setup(this.node, { mode: this.mode, interval: this.interval, fftSize: this.fftSize });
+    this.observable = this.analyserService.setup(this.nodeComplex, { mode: this.mode, interval: this.interval, fftSize: this.fftSize });
     this.subscriber = <Subscriber<any>>this.observable.subscribe((data: Uint8Array) => {
       this.drawBars(data);
     });
@@ -78,22 +78,22 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
 
     const modeChange = (<{ mode: SimpleChange }>changes).mode;
     if (modeChange) {
-      this.analyserService.update(this.node, { mode: modeChange.currentValue });
+      this.analyserService.update(this.nodeComplex, { mode: modeChange.currentValue });
     }
 
     const intervalChange = (<{ interval: SimpleChange }>changes).interval;
     if (intervalChange) {
-      this.analyserService.update(this.node, { interval: intervalChange.currentValue });
+      this.analyserService.update(this.nodeComplex, { interval: intervalChange.currentValue });
     }
 
     const fftSizeChange = (<{ fftSize: SimpleChange }>changes).fftSize;
     if (fftSizeChange) {
-      this.analyserService.update(this.node, { fftSize: fftSizeChange.currentValue });
+      this.analyserService.update(this.nodeComplex, { fftSize: fftSizeChange.currentValue });
     }
   }
 
   ngOnDestroy() {
-    this.analyserService.tearDown(this.node, this.subscriber);
+    this.analyserService.tearDown(this.nodeComplex, this.subscriber);
     this.subscriber = null;
     this.observable = null;
   }

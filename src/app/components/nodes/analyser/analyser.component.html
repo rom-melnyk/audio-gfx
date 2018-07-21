@@ -4,24 +4,10 @@
     <button (click)="onToggleSetup();">{{isSetupVisible ? '&ndash;' : '+'}}</button>
   </h4>
   <section *ngIf="isSetupVisible">
-    <div class="field-set" data-name="Mode">
-      <input id="type-bars" type="radio" name="type" value="bars" [(ngModel)]="mode">
-      <label for="type-bars">bars</label>
-      <input id="type-waveform" type="radio" name="type" value="waveform" [(ngModel)]="mode">
-      <label for="type-waveform">waveform</label>
-    </div>
-    <div class="field-set" data-name="Color">
-      <input type="checkbox" [(ngModel)]="colorize">
-    </div>
-    <div class="field-set" data-name="Interval, ms">
-      <input type="number" min="18" max="1000" [(ngModel)]="interval">
-    </div>
-    <div class="field-set" data-name="FFT size, 2^x">
-      <input type="range" min="5" max="15" step="1" [(ngModel)]="fftSize">
-    </div>
+    <app-form [fields]="nodeComplex.config"></app-form>
   </section>
   <app-canvas
-      [node]="node"
+      [nodeComplex]="nodeComplex"
       [mode]="mode"
       [colorize]="colorize"
       [interval]="interval"

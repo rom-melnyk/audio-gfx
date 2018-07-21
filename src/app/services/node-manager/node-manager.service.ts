@@ -13,75 +13,75 @@ const MODULE_NAME = 'NodeManagerService';
   providedIn: 'root'
 })
 export class NodeManagerService {
-  private nodes: AbstractNodeComplex[] = [];
+  private nodeComplexes: AbstractNodeComplex[] = [];
 
   constructor(
     private audioContext: AudioContextService
   ) {
-    this.nodes.push(
+    this.nodeComplexes.push(
       new AbstractNodeComplex(NodeTypes.AudioSourceNode, null), // dummy one; will be updated during init phase
       this.createNodeComplex(NodeTypes.AudioDestinationNode),
     );
   }
 
   initNodesChain(audioElement: HTMLAudioElement) {
-    if (this.nodes[0].node) { // already initialized?
+    if (this.nodeComplexes[0].node) { // already initialized?
       return;
     }
 
     // WORKAROUND: since <audio> element is created _after_ AudioSourceNode was created,
     // we have to update the AudioSourceNode afterwards.
-    // After it's done we can proceed with nodes chain.
-    this.nodes[0] = this.createNodeComplex(NodeTypes.AudioSourceNode, audioElement);
-    this.nodes.forEach((node, i, nodes): void => {
-      if (i === this.nodes.length - 1) {
+    // After it's done we can proceed with nodeComplexes chain.
+    this.nodeComplexes[0] = this.createNodeComplex(NodeTypes.AudioSourceNode, audioElement);
+    this.nodeComplexes.forEach((nodeComplex, i, nodeComplexes): void => {
+      if (i === this.nodeComplexes.length - 1) {
         return;
       }
-      node.node.connect(nodes[i + 1].node);
+      nodeComplex.node.connect(nodeComplexes[i + 1].node);
     });
   }
 
   addNodeAt(type: NodeTypes, position: number): void {
-    if (position < 1 || position > this.nodes.length - 1) {
+    if (position < 1 || position > this.nodeComplexes.length - 1) {
       console.error(`[ ${MODULE_NAME}::addNodeAt() ] Bad position ${position}`);
       return;
     }
 
-    const previousNode = this.nodes[position - 1];
-    const nextNode = this.nodes[position];
-    const newNode = this.createNodeComplex(type);
+    const previousNodeComplex = this.nodeComplexes[position - 1];
+    const nextNodeComplex = this.nodeComplexes[position];
+    const newNodeComplex = this.createNodeComplex(type);
 
-    previousNode.node.disconnect(nextNode.node);
-    previousNode.node.connect(newNode.node);
-    newNode.node.connect(nextNode.node);
+    previousNodeComplex.node.disconnect(nextNodeComplex.node);
+    previousNodeComplex.node.connect(newNodeComplex.node);
+    newNodeComplex.node.connect(nextNodeComplex.node);
 
-    this.nodes.splice(position, 0, newNode);
+    this.nodeComplexes.splice(position, 0, newNodeComplex);
   }
 
 
   removeNodeAt(position): void {
-    if (position === 0 || position === this.nodes.length - 1) {
+    if (position === 0 || position === this.nodeComplexes.length - 1) {
       console.error(`[ ${MODULE_NAME} ] Cannot remove first or last node`);
       return;
     }
 
-    if (position < 1 || position > this.nodes.length - 2) {
+    if (position < 1 || position > this.nodeComplexes.length - 2) {
       console.error(`[ ${MODULE_NAME} ] Bad position ${position}`);
       return;
     }
 
-    const previousNode = this.nodes[position - 1];
-    const nextNode = this.nodes[position + 1];
-    const [ node ] = this.nodes.splice(position, 1);
+    const previousNodeComplex = this.nodeComplexes[position - 1];
+    const nextNodeComplex = this.nodeComplexes[position + 1];
+    const [ nodeComplex ] = this.nodeComplexes.splice(position, 1);
 
-    previousNode.node.disconnect(node.node);
-    node.node.disconnect(nextNode.node);
-    previousNode.node.connect(nextNode.node);
+    previousNodeComplex.node.disconnect(nodeComplex.node);
+    nodeComplex.node.disconnect(nextNodeComplex.node);
+    previousNodeComplex.node.connect(nextNodeComplex.node);
   }
 
 
-  getNodes(): AbstractNodeComplex[] {
-    return this.nodes;
+  getNodeComplexes(): AbstractNodeComplex[] {
+    return this.nodeComplexes;
   }
 
 
