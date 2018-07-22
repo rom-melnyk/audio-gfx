@@ -3,9 +3,11 @@ import { INumberInput } from '../components/form-elements/input-interfaces';
 
 class GainNodeComplex extends AbstractNodeComplex {
   constructor(
-    public node: GainNode
+    private audioContext: AudioContext,
   ) {
-    super(NodeTypes.GainNode, node);
+    super(NodeTypes.GainNode);
+    const gainNode = audioContext.createGain();
+    this.node = gainNode;
     this.config = [
       <INumberInput>{
         type: 'number',
@@ -13,7 +15,7 @@ class GainNodeComplex extends AbstractNodeComplex {
         default: 1,
         label: 'Gain',
         onChange(value) {
-          node.gain.value = Number(value) || 0;
+          gainNode.gain.value = Number(value) || 0;
         }
       }
     ];

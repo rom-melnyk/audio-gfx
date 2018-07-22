@@ -10,9 +10,10 @@ class AnalyserNodeComplex extends AbstractNodeComplex {
   static readonly DEFAULT_INTERVAL = 50;
 
   constructor(
-    public node: AnalyserNode
+    private audioContext: AudioContext,
   ) {
-    super(NodeTypes.AnalyserNode, node);
+    super(NodeTypes.AnalyserNode);
+    const analyserNode = audioContext.createAnalyser();
     this.config = [
       <IRadioInput>{
         type: 'radio',
@@ -45,7 +46,7 @@ class AnalyserNodeComplex extends AbstractNodeComplex {
         default: 6,
         label: 'FFT size, 2<sup>n</sup>',
         onChange(value) {
-          node.fftSize = Math.pow(2, <number>value);
+          analyserNode.fftSize = Math.pow(2, <number>value);
         }
       },
     ];

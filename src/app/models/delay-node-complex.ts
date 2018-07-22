@@ -5,9 +5,11 @@ class DelayNodeComplex extends AbstractNodeComplex {
   static readonly MAX_DELAY = 10; // in seconds
 
   constructor(
-    public node: DelayNode
+    private audioContext: AudioContext,
   ) {
-    super(NodeTypes.DelayNode, node);
+    super(NodeTypes.DelayNode);
+    const delayNode = audioContext.createDelay(DelayNodeComplex.MAX_DELAY);
+    this.node = delayNode;
     this.config = [
       <INumberInput>{
         type: 'number',
@@ -15,7 +17,7 @@ class DelayNodeComplex extends AbstractNodeComplex {
         default: 0,
         label: 'Delay, s',
         onChange(value) {
-          node.delayTime.value = Number(value) || 0;
+          delayNode.delayTime.value = Number(value) || 0;
         }
       }
     ];

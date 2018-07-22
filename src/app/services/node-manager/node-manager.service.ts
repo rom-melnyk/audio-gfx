@@ -19,7 +19,7 @@ export class NodeManagerService {
     private audioContext: AudioContextService
   ) {
     this.nodeComplexes.push(
-      new AbstractNodeComplex(NodeTypes.AudioSourceNode, null), // dummy one; will be updated during init phase
+      this.createNodeComplex(NodeTypes.AudioSourceNode),
       this.createNodeComplex(NodeTypes.AudioDestinationNode),
     );
   }
@@ -32,7 +32,7 @@ export class NodeManagerService {
     // WORKAROUND: since <audio> element is created _after_ AudioSourceNode was created,
     // we have to update the AudioSourceNode afterwards.
     // After it's done we can proceed with nodeComplexes chain.
-    this.nodeComplexes[0] = this.createNodeComplex(NodeTypes.AudioSourceNode, audioElement);
+    (<AudioSourceNodeComplex>this.nodeComplexes[0]).createNodeFromAudioElement(audioElement);
     this.nodeComplexes.forEach((nodeComplex, i, nodeComplexes): void => {
       if (i === this.nodeComplexes.length - 1) {
         return;
@@ -85,23 +85,19 @@ export class NodeManagerService {
   }
 
 
-  private createNodeComplex(type: NodeTypes, param: any = null): AbstractNodeComplex {
+  private createNodeComplex(type: NodeTypes): AbstractNodeComplex {
     const audioContext = this.audioContext.getContext();
     switch (type) {
       case NodeTypes.AudioSourceNode:
-        const audioSourceNode = audioContext.createMediaElementSource(<HTMLAudioElement>param);
-        return new AudioSourceNodeComplex(audioSourceNode);
+        return new AudioSourceNodeComplex(audioContext);
       case NodeTypes.AnalyserNode:
-        const analyserNode = audioContext.createAnalyser();
-        return new AnalyserNodeComplex(analyserNode);
+        return new AnalyserNodeComplex(audioContext);
       case NodeTypes.GainNode:
-        const gainNode = audioContext.createGain();
-        return new GainNodeComplex(gainNode);
+        return new GainNodeComplex(audioContext);
       case NodeTypes.DelayNode:
-        const delayNode = audioContext.createDelay(DelayNodeComplex.MAX_DELAY);
-        return new DelayNodeComplex(delayNode);
+        return new DelayNodeComplex(audioContext);
       case NodeTypes.AudioDestinationNode:
-        return new AudioDestinationNodeComplex(audioContext.destination);
+        return new AudioDestinationNodeComplex(audioContext);
       default:
     }
     console.error(`[ ${MODULE_NAME}::createNode() ] Bad node type "${type}"`);

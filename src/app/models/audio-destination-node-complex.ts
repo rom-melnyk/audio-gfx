@@ -2,9 +2,10 @@ import { AbstractNodeComplex, NodeTypes } from './abstract-node-complex';
 
 class AudioDestinationNodeComplex extends AbstractNodeComplex {
   constructor(
-    public node: AudioDestinationNode
+    private audioContext: AudioContext
   ) {
-    super(NodeTypes.AudioDestinationNode, node);
+    super(NodeTypes.AudioDestinationNode);
+    this.node = audioContext.destination;
   }
 }
 
