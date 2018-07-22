@@ -9,46 +9,49 @@ enum AnalyserModes {
 class AnalyserNodeComplex extends AbstractNodeComplex {
   static readonly DEFAULT_INTERVAL = 50;
 
+  public configurables: {
+    mode?: IRadioInput,
+    colorize?: IBooleanInput,
+    interval?: INumberInput,
+    fftSize?: INumberInput,
+  } = {};
+
   constructor(
     private audioContext: AudioContext,
   ) {
     super(NodeTypes.AnalyserNode);
     const analyserNode = audioContext.createAnalyser();
+    this.node = analyserNode;
+
+    // onChange() handlers are set later
+    this.configurables.mode = <IRadioInput>{
+      type: 'radio',
+      default: AnalyserModes.BARS,
+      options: [ AnalyserModes.BARS, AnalyserModes.WAVEFORM ],
+    };
+    this.configurables.colorize = <IBooleanInput>{
+      type: 'boolean',
+      default: false,
+      label: 'Colorize',
+    };
+    this.configurables.interval = <INumberInput>{
+      type: 'number',
+      limits: [25, 1000, 25],
+      default: AnalyserNodeComplex.DEFAULT_INTERVAL,
+      label: 'Interval, ms',
+    };
+    this.configurables.fftSize = <INumberInput>{
+      type: 'number',
+      limits: [5, 15, 1],
+      default: 6,
+      label: 'FFT size, 2<sup>n</sup>',
+    };
+
     this.config = [
-      <IRadioInput>{
-        type: 'radio',
-        default: AnalyserModes.BARS,
-        options: [ AnalyserModes.BARS, AnalyserModes.WAVEFORM ],
-        onChange(value) {
-          console.log(`Mode is ${value}`);
-        }
-      },
-      <IBooleanInput>{
-        type: 'boolean',
-        default: false,
-        label: 'Colorize',
-        onChange(value) {
-          console.log(`Colorize is ${value ? 'on' : 'off'}`);
-        }
-      },
-      <INumberInput>{
-        type: 'number',
-        limits: [25, 1000, 25],
-        default: AnalyserNodeComplex.DEFAULT_INTERVAL,
-        label: 'Interval, ms',
-        onChange(value) {
-          console.log(`Interval = ${value}ms`);
-        }
-      },
-      <INumberInput>{
-        type: 'number',
-        limits: [5, 15, 1],
-        default: 6,
-        label: 'FFT size, 2<sup>n</sup>',
-        onChange(value) {
-          analyserNode.fftSize = Math.pow(2, <number>value);
-        }
-      },
+      this.configurables.mode,
+      this.configurables.colorize,
+      this.configurables.interval,
+      this.configurables.fftSize,
     ];
   }
 }

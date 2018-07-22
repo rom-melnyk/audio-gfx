@@ -1,25 +1,24 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { AnalyserNodeComplex, AnalyserModes } from '../../../models/analyser-node-complex';
+import { AnalyserNodeComplex } from '../../../models/analyser-node-complex';
 
 @Component({
   selector: 'app-analyser',
-  templateUrl: './analyser.component.html',
-  styleUrls: ['./analyser.component.scss']
+  template: `
+    <div class="setup">
+      <button (click)="onToggleSetup();">&#x2699;</button>
+    </div>
+    <section *ngIf="isSetupVisible">
+      <app-form [fields]="nodeComplex.config"></app-form>
+    </section>
+    <app-canvas [nodeComplex]="nodeComplex"></app-canvas>
+  `,
+  styles: [
+    '.setup { margin: 0 0 .5rem; }',
+  ]
 })
 export class AnalyserComponent implements OnInit {
   @Input() nodeComplex: AnalyserNodeComplex;
-
   public isSetupVisible = false;
-  // --- TODO remove this in honor of nodeComplex.config ---
-  public mode: AnalyserModes = AnalyserModes.BARS;
-  public colorize = false;
-  public interval = AnalyserNodeComplex.DEFAULT_INTERVAL;
-  public fftSize = 6;
-  // -------------------------------------------------------
-
-  public get exportFftSize() {
-    return Math.pow(2, this.fftSize);
-  }
 
   constructor() { }
 

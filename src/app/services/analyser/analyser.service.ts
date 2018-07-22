@@ -1,99 +1,81 @@
 import { Injectable } from '@angular/core';
-import { Observable, Observer, Subscriber } from 'rxjs';
+import { Observable, Observer, Subscription } from 'rxjs';
 import { map, filter, tap } from 'rxjs/operators';
 import { AnalyserNodeComplex, AnalyserModes } from '../../models/analyser-node-complex';
 
 const MODULE_NAME = 'AnalyserService';
 
-interface IAnalyserProps {
-  mode?: AnalyserModes;
-  interval?: number;
-  fftSize?: number;
-}
-
 @Injectable({
   providedIn: 'root'
 })
 export class AnalyserService {
-  private store: Array<{ node: AnalyserNodeComplex, observable: AnalyserObservable }> = [];
+  private store: Array<AnalyserObservable> = [];
 
   constructor() {}
 
-  getObservable(node: AnalyserNodeComplex): Observable<Uint8Array> {
-    const index = this.findStoreIndexByNode(node);
+  setup(nodeComplex: AnalyserNodeComplex, callback: (data: Uint8Array) => void) {
+    const index = this.findStoreIndexByNode(nodeComplex);
     if (this.store[index]) {
-      return this.store[index].observable.observable;
-    }
-
-    console.error(`[ ${MODULE_NAME}::getObservable() ] no entry found for this node`, node);
-    return null;
-  }
-
-  setup(node: AnalyserNodeComplex, props: IAnalyserProps): Observable<Uint8Array> {
-    const index = this.findStoreIndexByNode(node);
-    if (this.store[index]) {
-      console.error(`[ ${MODULE_NAME}::setup() ] entry already exists for this node`, node);
+      console.error(`[ ${MODULE_NAME}::setup() ] entry already exists for this nodeComplex`, nodeComplex);
       return null;
     }
 
-    const observable = new AnalyserObservable(node, props);
-    this.store.push({ node, observable });
-    return observable.observable;
+    const observable = new AnalyserObservable(nodeComplex, callback);
+    this.store.push(observable);
   }
 
-  update(node: AnalyserNodeComplex, props: IAnalyserProps): void {
+  tearDown(node: AnalyserNodeComplex): void {
     const index = this.findStoreIndexByNode(node);
-    if (this.store[index]) {
-      const { observable } = this.store[index];
-      Object.assign(observable, props);
-    } else {
-      console.error(`[ ${MODULE_NAME}::update() ] no entry found for this node`, node);
-    }
-  }
-
-  tearDown(node: AnalyserNodeComplex, subscriber: Subscriber<any>): void {
-    const index = this.findStoreIndexByNode(node);
-    if (this.store[index]) {
-      const { observable } = this.store[index];
-      observable.tearDown(subscriber);
+    const observable = this.store[index];
+    if (observable) {
+      observable.tearDown();
       this.store.splice(index, 1);
     } else {
       console.error(`[ ${MODULE_NAME}::tearDown() ] no entry found for this node`, node);
     }
   }
 
-  private findStoreIndexByNode(node: AnalyserNodeComplex): number {
-    return this.store.findIndex((item) => node === item.node);
+  private findStoreIndexByNode(nodeComplex: AnalyserNodeComplex): number {
+    return this.store.findIndex((item) => nodeComplex === item.nodeComplex);
   }
 }
 
 
-class AnalyserObservable implements IAnalyserProps {
+class AnalyserObservable {
   private observer: Observer<any> = null;
-  public observable: Observable<Uint8Array> = null;
-  public mode: AnalyserModes;
-  public interval: number;
+  private observable: Observable<Uint8Array> = null;
+  private subscription: Subscription = null;
 
-  private _fftSize: number;
-  public set fftSize(x) {
-    this._fftSize = x;
-    (<AnalyserNode>this.node.node).fftSize = this._fftSize;
-  }
-  public get fftSize() {
-    return this._fftSize;
-  }
+  private mode: AnalyserModes;
+  private interval: number;
+  private fftSize: number; // for the matter of consistency
 
   constructor(
-    private node: AnalyserNodeComplex,
-    props: IAnalyserProps,
+    public nodeComplex: AnalyserNodeComplex,
+    callback: (data: Uint8Array) => void
   ) {
-    this.mode = props.mode;
-    this.interval = props.interval;
-    this.fftSize = props.fftSize;
+    this.mode = <AnalyserModes>nodeComplex.configurables.mode.default;
+    this.interval = nodeComplex.configurables.interval.default;
+    this.fftSize = nodeComplex.configurables.fftSize.default;
 
     this.tick = this.tick.bind(this);
 
-    const analyser = <AnalyserNode>node.node;
+    const analyser = <AnalyserNode>nodeComplex.node;
+
+    // onChange() handlers
+    nodeComplex.configurables.mode.onChange = (value) => {
+      this.mode = <AnalyserModes>value;
+    };
+    nodeComplex.configurables.interval.onChange = (value) => {
+      this.interval = Number(value);
+    };
+    nodeComplex.configurables.fftSize.onChange = (value) => {
+      analyser.fftSize = Math.pow(2, Number(value));
+    };
+    // set correct startup fftSize
+    nodeComplex.configurables.fftSize.onChange(
+      nodeComplex.configurables.fftSize.default
+    );
 
     let previousSum = 1;
 
@@ -121,12 +103,14 @@ class AnalyserObservable implements IAnalyserProps {
       }),
       map((data: [ Uint8Array, number ]) => data[0])
     );
+
+    this.subscription = this.observable.subscribe(callback);
   }
 
-  tearDown(subscriber: Subscriber<any>) {
+  tearDown() {
     this.observer.complete();
     this.observer = null;
-    subscriber.unsubscribe();
+    this.subscription.unsubscribe();
     this.observable = null;
   }
 

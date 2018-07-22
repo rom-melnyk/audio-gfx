@@ -1,7 +1,6 @@
-import { Component, OnInit, OnChanges, OnDestroy, Input, ElementRef, SimpleChanges, SimpleChange } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ElementRef, } from '@angular/core';
 import { AnalyserService } from '../../../../services/analyser/analyser.service';
-import { AnalyserNodeComplex, AnalyserModes } from '../../../../models/analyser-node-complex';
-import { Observable, Subscriber } from 'rxjs';
+import { AnalyserNodeComplex } from '../../../../models/analyser-node-complex';
 
 const DEFAULT_COLOR = 'hsl(210, 10%, 80%)';
 
@@ -16,20 +15,16 @@ const DEFAULT_COLOR = 'hsl(210, 10%, 80%)';
     }`
   ]
 })
-export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
+export class CanvasComponent implements OnInit, OnDestroy {
   private canvas: HTMLCanvasElement = null;
   private ctx: CanvasRenderingContext2D = null;
   private gapFactor = .1;
-  private observable: Observable<Uint8Array> = null;
-  private subscriber: Subscriber<any> = null;
+  private colorize: boolean;
+
   public width;
   public height;
 
   @Input() nodeComplex: AnalyserNodeComplex = null;
-  @Input() mode: AnalyserModes;
-  @Input() colorize: boolean;
-  @Input() interval: number;
-  @Input() fftSize: number;
 
   constructor(
     private analyserService: AnalyserService,
@@ -42,10 +37,13 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     this.height = this.canvas.offsetHeight;
     this.ctx = this.canvas.getContext('2d');
 
-    this.observable = this.analyserService.setup(this.nodeComplex, { mode: this.mode, interval: this.interval, fftSize: this.fftSize });
-    this.subscriber = <Subscriber<any>>this.observable.subscribe((data: Uint8Array) => {
+    this.analyserService.setup(this.nodeComplex, (data: Uint8Array) => {
       this.drawBars(data);
     });
+
+    this.nodeComplex.configurables.colorize.onChange = (value) => {
+      this.colorize = <boolean>value;
+    };
   }
 
   drawBars(data: Uint8Array | number[]) {
@@ -71,30 +69,7 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (!this.observable) {
-      return;
-    }
-
-    const modeChange = (<{ mode: SimpleChange }>changes).mode;
-    if (modeChange) {
-      this.analyserService.update(this.nodeComplex, { mode: modeChange.currentValue });
-    }
-
-    const intervalChange = (<{ interval: SimpleChange }>changes).interval;
-    if (intervalChange) {
-      this.analyserService.update(this.nodeComplex, { interval: intervalChange.currentValue });
-    }
-
-    const fftSizeChange = (<{ fftSize: SimpleChange }>changes).fftSize;
-    if (fftSizeChange) {
-      this.analyserService.update(this.nodeComplex, { fftSize: fftSizeChange.currentValue });
-    }
-  }
-
   ngOnDestroy() {
-    this.analyserService.tearDown(this.nodeComplex, this.subscriber);
-    this.subscriber = null;
-    this.observable = null;
+    this.analyserService.tearDown(this.nodeComplex);
   }
 }
