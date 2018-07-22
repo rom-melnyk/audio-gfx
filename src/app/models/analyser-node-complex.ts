@@ -14,6 +14,9 @@ class AnalyserNodeComplex extends AbstractNodeComplex {
     colorize?: IBooleanInput,
     interval?: INumberInput,
     fftSize?: INumberInput,
+    smoothingTimeConstant?: INumberInput,
+    minDecibels?: INumberInput,
+    maxDecibels?: INumberInput,
   } = {};
 
   constructor(
@@ -46,12 +49,35 @@ class AnalyserNodeComplex extends AbstractNodeComplex {
       default: 6,
       label: 'FFT size, 2<sup>n</sup>',
     };
+    this.configurables.smoothingTimeConstant = <INumberInput>{
+      type: 'number',
+      limits: [0, 1, .01],
+      default: .8,
+      label: 'Smoothing time constant',
+    };
+    this.configurables.minDecibels = <INumberInput>{
+      type: 'number',
+      limits: [-200, 0, 10],
+      default: -100,
+      label: 'minDecibels',
+      errorMessage: 'Cannot be greater then maxDecibel!'
+    };
+    this.configurables.maxDecibels = <INumberInput>{
+      type: 'number',
+      limits: [-200, 0, 10],
+      default: -30,
+      label: 'maxDecibels',
+      errorMessage: 'Cannot be less then or equal to minDecibel!'
+    };
 
     this.config = [
       this.configurables.mode,
       this.configurables.colorize,
       this.configurables.interval,
       this.configurables.fftSize,
+      this.configurables.smoothingTimeConstant,
+      this.configurables.minDecibels,
+      this.configurables.maxDecibels,
     ];
   }
 }

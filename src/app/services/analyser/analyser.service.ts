@@ -49,6 +49,9 @@ class AnalyserObservable {
   private mode: AnalyserModes;
   private interval: number;
   private fftSize: number; // for the matter of consistency
+  private smoothingTimeConstant: number;
+  private minDecibels: number;
+  private maxDecibels: number;
 
   constructor(
     public nodeComplex: AnalyserNodeComplex,
@@ -57,6 +60,9 @@ class AnalyserObservable {
     this.mode = <AnalyserModes>nodeComplex.configurables.mode.default;
     this.interval = nodeComplex.configurables.interval.default;
     this.fftSize = nodeComplex.configurables.fftSize.default;
+    this.smoothingTimeConstant = nodeComplex.configurables.smoothingTimeConstant.default;
+    this.minDecibels = nodeComplex.configurables.minDecibels.default;
+    this.maxDecibels = nodeComplex.configurables.maxDecibels.default;
 
     this.tick = this.tick.bind(this);
 
@@ -76,6 +82,30 @@ class AnalyserObservable {
     nodeComplex.configurables.fftSize.onChange(
       nodeComplex.configurables.fftSize.default
     );
+    nodeComplex.configurables.smoothingTimeConstant.onChange = (value) => {
+      analyser.smoothingTimeConstant = Number(value);
+    };
+    nodeComplex.configurables.minDecibels.onChange = (value) => {
+      const v = Number(value);
+      if (nodeComplex.configurables.minDecibels.validate(v)) {
+        this.minDecibels = v;
+        analyser.minDecibels = v;
+      }
+    };
+    nodeComplex.configurables.maxDecibels.onChange = (value) => {
+      const v = Number(value);
+      if (nodeComplex.configurables.maxDecibels.validate(v)) {
+        this.maxDecibels = v;
+        analyser.maxDecibels = Number(value);
+      }
+    };
+    nodeComplex.configurables.minDecibels.validate = (value: number) => {
+      return value < this.maxDecibels;
+    };
+    nodeComplex.configurables.maxDecibels.validate = (value: number) => {
+      return value > this.minDecibels;
+    };
+
 
     let previousSum = 1;
 
