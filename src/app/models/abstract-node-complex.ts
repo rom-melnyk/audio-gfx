@@ -5,6 +5,7 @@ enum NodeTypes {
   AnalyserNode = 'Analyser Node',
   GainNode = 'Gain Node',
   DelayNode = 'Delay Node',
+  BiquadFilterNode = 'Biquad Filter Node',
   AudioDestinationNode = 'Audio Destination Node',
 }
 

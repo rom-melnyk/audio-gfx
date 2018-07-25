@@ -5,6 +5,7 @@ import { AudioSourceNodeComplex } from '../../models/audio-source-node-complex';
 import { AnalyserNodeComplex } from '../../models/analyser-node-complex';
 import { DelayNodeComplex } from '../../models/delay-node-complex';
 import { GainNodeComplex } from '../../models/gain-node-complex';
+import { BiquadFilterNodeComplex } from '../../models/biquad-filter-node-complex';
 import { AudioDestinationNodeComplex } from '../../models/audio-destination-node-complex';
 
 const MODULE_NAME = 'NodeManagerService';
@@ -96,6 +97,8 @@ export class NodeManagerService {
         return new GainNodeComplex(audioContext);
       case NodeTypes.DelayNode:
         return new DelayNodeComplex(audioContext);
+      case NodeTypes.BiquadFilterNode:
+        return new BiquadFilterNodeComplex(audioContext);
       case NodeTypes.AudioDestinationNode:
         return new AudioDestinationNodeComplex(audioContext);
       default:

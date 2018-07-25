@@ -10,6 +10,7 @@
     <app-analyser *ngSwitchCase="NodeTypes.AnalyserNode" [nodeComplex]="nodeComplex"></app-analyser>
     <app-gain *ngSwitchCase="NodeTypes.GainNode" [nodeComplex]="nodeComplex"></app-gain>
     <app-delay *ngSwitchCase="NodeTypes.DelayNode" [nodeComplex]="nodeComplex"></app-delay>
+    <app-biquad-filter *ngSwitchCase="NodeTypes.BiquadFilterNode" [nodeComplex]="nodeComplex"></app-biquad-filter>
     <app-audio-destination *ngSwitchCase="NodeTypes.AudioDestinationNode" [nodeComplex]="nodeComplex"></app-audio-destination>
     <div class="unknown" *ngSwitchDefault>Unknown node type "{{nodeComplex?.type}}"</div>
   </section>

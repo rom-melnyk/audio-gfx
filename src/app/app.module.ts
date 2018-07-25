@@ -13,6 +13,7 @@ import { AddNodeComponent } from './components/nodes/add-node/add-node.component
 import { AnalyserComponent } from './components/nodes/analyser/analyser.component';
 import { GainComponent } from './components/nodes/gain/gain.component';
 import { DelayComponent } from './components/nodes/delay/delay.component';
+import { BiquadFilterComponent } from './components/nodes/biquad-filter/biquad-filter.component';
 import { CanvasComponent } from './components/nodes/analyser/canvas/canvas.component';
 import { InputNumberComponent } from './components/form-elements/input-number/input-number.component';
 import { FormComponent } from './components/form-elements/form/form.component';
@@ -32,6 +33,7 @@ import { InputRadioComponent } from './components/form-elements/input-radio/inpu
     CanvasComponent,
     GainComponent,
     DelayComponent,
+    BiquadFilterComponent,
     AudioDestinationComponent,
 
     AddNodeComponent,
